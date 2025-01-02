@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>자바 스크립트 자료형</h1>
+    <script>
+      // number type
+      let n1 = 1234;
+      let n2 = 56.78;
+      console.log(n1, typeof n1); // 1234 number
+      console.log(n2, typeof n2); // 56.78 number
+
+      // string type
+      let s1 = "Hello";
+      let s2 = "World";
+
+      // 이스케이프 처리
+      let s3 = "Hello, 'Inho'";
+      let s4 = 'Hello, "Inho"';
+
+      // 템플릿 문자열(template literal)
+      // https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Template_literals
+      let name = "Inho";
+      let age = 23;
+      let hello1 = '이름은 "' + name + '"이고, 나이는 ' + age + "세 입니다.";
+      console.log(hello1);
+
+      let hello2 = `이름은 "${name}"이고, 나이는 ${age}세 입니다. 내녕에서는 ${
+        age + 1
+      }세가 됩니다.`;
+      console.log(hello2);
+
+      // boolean type
+      let b1 = true;
+      let b2 = false;
+      console.log(b1, typeof b1); // true boolean
+      console.log(b2, typeof b2); // false boolean
+
+      // falsy value
+      console.log(Boolean("")); // false
+      console.log(Boolean(0)); // false
+      console.log(Boolean(-0)); // false
+      console.log(Boolean(null)); // false
+      console.log(Boolean(undefined)); // false
+      console.log(Boolean(NaN)); // false
+      console.log(Boolean(false)); // false
+
+      if (undefined) {
+        console.log("undefined는 true");
+      } else {
+        console.log("undefined는 false"); // undefined는 false 출력
+      }
+
+      if (-1) {
+        console.log("-1은 true"); // -1은 true 출력
+      } else {
+        console.log("-1은 false");
+      }
+
+      // null type
+      let nullValue = null;
+
+      // undefined type
+      let u1;
+      let u2 = undefined;
+
+      // array type = 다양한 데이터 타입을 순서대로 모아놓은 것
+      let arr1 = [1, 2, 3, 4, 5];
+      let arr2 = [1, 2.3, "hello", true, null, undefined, [1, 2, 3]];
+      console.log(arr1[3]); // 4
+      console.log(arr2[5]); // undefined
+      arr1[3] = 100;
+      console.log(arr1); // [1, 2, 3, 100, 5]
+
+      // object type = key와 value로 이루어진 데이터 타입
+      //               key는 문자열 또는 심볼이어야 하고, 값은 모든 데이터 타입이 가능
+      let obj1 = { a: "apple", b: "banana", c: "cherry" };
+      let obj2 = {
+        name: "Inho",
+        age: 23,
+        "favorite colors": ["red", "blue", "green"],
+      };
+      console.log(obj1["a"]); // apple
+      console.log(obj1.a); // apple
+      console.log(obj2["favorite colors"]); // ['red', 'blue', 'green']
+    </script>
+  </body>
+</html>
