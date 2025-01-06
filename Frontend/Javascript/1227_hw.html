@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"
+    />
+  </head>
+  <body>
+    <h1>객체와 배열을 이용한 데이터 처리</h1>
+    <script>
+      //  학생별 점수를 아래 형식에 맞춰서 콘솔에 출력
+
+      let scores = [];
+      scores.push({ name: "홍길동", korean: 80, math: 90, english: 90 });
+      scores.push({ name: "고길동", korean: 90, math: 80, english: 80 });
+      scores.push({ name: "신길동", korean: 70, math: 80, english: 70 });
+
+      // console.log(
+      //   "----------- --------- --------- --------- --------- ---------"
+      // );
+      // console.log(
+      //   "학생이름       국어       영어       수학       합계       평균"
+      // );
+      // console.log(
+      //   "----------- --------- --------- --------- --------- ---------"
+      // );
+      // for (score of scores) {
+      //   let sum = score.korean + score.math + score.english;
+      //   let avg = sum / 3;
+      //   console.log(
+      //     `${score.name}         ${score.korean}        ${score.math}        ${
+      //       score.english
+      //     }       ${sum}       ${avg.toFixed(1)}`
+      //   );
+      // }
+
+      // 타이틀 출력
+      console.log("-----------\t----\t----\t----\t----\t----");
+      console.log("학생이름\t국어\t영어\t수학\t합계\t평균");
+      console.log("-----------\t----\t----\t----\t----\t----");
+
+      // 학생별 점수 출력
+      scores.forEach((score) => {
+        const total = score.korean + score.math + score.english;
+        const average = total / 3;
+        console.log(
+          `${score.name}\t\t${score.korean}\t\t${score.english}\t\t${
+            score.math
+          }\t\t${total}\t\t${average.toFixed(1)}`
+        );
+      });
+
+      // 각 과목의 점수를 추출해서 합계를 계산
+      const ksum = scores.map((s) => s.korean).reduce((a, c) => a + c, 0);
+      const esum = scores.map((s) => s.english).reduce((a, c) => a + c, 0);
+      const msum = scores.map((s) => s.math).reduce((a, c) => a + c, 0);
+
+      // 특정 과목의 점수를 추출해서 합계를 계산(반환)하는 함수를 정의
+      const sum = (subject) =>
+        scores.map((s) => s[subject]).reduce((a, c) => a + c, 0);
+
+      // 풋터 출력
+      console.log("-----------\t----\t----\t----\t----\t----");
+      console.log(`총점\t\t${ksum}\t\t${esum}\t\t${msum}\t`);
+    </script>
+  </body>
+</html>
