@@ -13,6 +13,10 @@ import AddSub from "./state/AddSub";
 import StateController from "./state/StateController";
 import CelsiusFahrenheit from "./state/CelsiusFahrenheit";
 import Form from "./Form";
+import MyComponentRef from "./ref/MyComponentRef";
+import PasswordChecker from "./ref/PasswordChecker";
+import ScrollBox from "./ref/ScrollBox";
+import IdPwChecker from "./ref/IdPwChecker";
 
 function App() {
   return (
@@ -38,7 +42,13 @@ function App() {
       {/* <IterationSample /> */}
 
       {/* Form */}
-      <Form />
+      {/* <Form /> */}
+
+      {/* Ref */}
+      {/* <MyComponentRef /> */}
+      {/* <PasswordChecker /> */}
+      {/* <ScrollBox /> */}
+      <IdPwChecker />
     </>
   );
 }
