@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      axios
+        .get("https://restcountries.com/v3.1/all")
+        .then((res) => {
+          // console.log(res);
+          res.data.forEach((country) => {
+            //   데이터의 구조를 파악해서 원하는 데이터를 추출
+            //   console.log(country.name.official);
+            //   console.log(country.flags.png);
+            //   console.log(country.maps.googleMaps);
+            //   console.log(country.maps.openStreetMaps);
+            //   console.log("-------------------------");
+            const li = `
+              <li>
+                <img src="${country.flags.png}" alt="${country.flags.alt}" />
+                <p>${country.name.common} (${country.name.official})</p>
+              </li>
+            `;
+            $("ul").append(li);
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    </script>
+    <style>
+      img {
+        width: 100px;
+        height: auto;
+      }
+      p {
+        display: inline;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>국가 정보를 가져와서 출력</h1>
+    <ul></ul>
+  </body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      axios.interceptors.request.use(
+        (config) => {
+          config.headers.Authorization = `Bearer MY_ACCESS_TOKEN`;
+          return config;
+        },
+        (error) => {
+          return Promise.reject(error);
+        }
+      );
+
+      axios.interceptors.response.use(
+        (response) => {
+          console.log("Interceptor response data", response);
+          return Promise.resolve(response);
+        },
+        (error) => {
+          console.error(error);
+          return Promise.reject(error);
+        }
+      );
+
+      axios
+        .post("https://jsonplaceholder.typicode.com/posts", {
+          title: "axios post test",
+          body: "axios is fun!!",
+          userName: "홍길동",
+        })
+        .then((res) => {
+          console.log(res.data);
+          // title만 콘솔에 출력
+          // res.data.map((post) => {
+          //   console.log(post.title);
+          // });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    </script>
+  </head>
+  <body></body>
+</html>
