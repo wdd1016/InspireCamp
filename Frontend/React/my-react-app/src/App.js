@@ -6,6 +6,13 @@ import Say from "./state/Say";
 import Todo from "./event/Todo";
 import EventPractice from "./event/EventPractice";
 import EventPracticeFunction from "./event/EventPracticeFunction";
+import IterationSample from "./event/IterationSample";
+import Drilling from "./state/Drilling";
+import Hoisting from "./state/Hoisting";
+import AddSub from "./state/AddSub";
+import StateController from "./state/StateController";
+import CelsiusFahrenheit from "./state/CelsiusFahrenheit";
+import Form from "./Form";
 
 function App() {
   return (
@@ -18,11 +25,20 @@ function App() {
       {/* State */}
       {/* <Counter /> */}
       {/* <Say /> */}
+      {/* <Drilling /> */}
+      {/* <Hoisting /> */}
+      {/* <AddSub /> */}
+      {/* <StateController /> */}
+      {/* <CelsiusFahrenheit /> */}
 
       {/* Event Handling */}
       {/* <Todo /> */}
       {/* <EventPractice /> */}
-      <EventPracticeFunction />
+      {/* <EventPracticeFunction /> */}
+      {/* <IterationSample /> */}
+
+      {/* Form */}
+      <Form />
     </>
   );
 }
