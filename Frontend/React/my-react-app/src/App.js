@@ -22,6 +22,10 @@ import Info from "./hooks/Info";
 import Average from "./hooks/Average";
 import CounterWithVariable from "./hooks/CounterWithVariable";
 import ChangeCountWithVariable from "./hooks/ChangeCountWithVariable";
+import Reducer from "./hooks/Reducer";
+import ReducerForInfo from "./hooks/ReducerForInfo";
+import MemoForAverage from "./hooks/MemoForAverage";
+import CallbackForTodo from "./hooks/CallbackForTodo";
 
 function App() {
   return (
@@ -62,7 +66,11 @@ function App() {
       {/* <Info /> */}
       {/* <Average /> */}
       {/* <CounterWithVariable /> */}
-      <ChangeCountWithVariable />
+      {/* <ChangeCountWithVariable /> */}
+      {/* <Reducer /> */}
+      {/* <ReducerForInfo /> */}
+      {/* <MemoForAverage /> */}
+      <CallbackForTodo />
     </>
   );
 }
