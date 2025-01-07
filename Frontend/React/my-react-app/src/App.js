@@ -26,6 +26,10 @@ import Reducer from "./hooks/Reducer";
 import ReducerForInfo from "./hooks/ReducerForInfo";
 import MemoForAverage from "./hooks/MemoForAverage";
 import CallbackForTodo from "./hooks/CallbackForTodo";
+import Theme from "./context/theme/Theme";
+import ContextForCounter from "./context/ContextForCounter";
+import ContextForDisplay from "./context/ContextForDisplay";
+import CustomHook from "./context/CustomHook";
 
 function App() {
   return (
@@ -70,7 +74,13 @@ function App() {
       {/* <Reducer /> */}
       {/* <ReducerForInfo /> */}
       {/* <MemoForAverage /> */}
-      <CallbackForTodo />
+      {/* <CallbackForTodo /> */}
+
+      {/* Context */}
+      {/* <Theme /> */}
+      {/* <ContextForCounter /> */}
+      {/* <ContextForDisplay /> */}
+      <CustomHook />
     </>
   );
 }
