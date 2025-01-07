@@ -17,6 +17,7 @@ import MyComponentRef from "./ref/MyComponentRef";
 import PasswordChecker from "./ref/PasswordChecker";
 import ScrollBox from "./ref/ScrollBox";
 import IdPwChecker from "./ref/IdPwChecker";
+import LifeCycleSample from "./lifecycle/LifeCycleSample";
 
 function App() {
   return (
@@ -48,7 +49,10 @@ function App() {
       {/* <MyComponentRef /> */}
       {/* <PasswordChecker /> */}
       {/* <ScrollBox /> */}
-      <IdPwChecker />
+      {/* <IdPwChecker /> */}
+
+      {/* LifeCycle */}
+      <LifeCycleSample />
     </>
   );
 }
