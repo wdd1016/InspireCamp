@@ -1,0 +1,52 @@
+< BrowserRouter >
+
+  React Router v6 이전부터 사용되어 온 방식으로, 선언적으고 간단한 설정을 제공 
+  HTML5의 History API를 기반으로 URL을 관리
+  애플리케이션의 루트 컴포넌트로 설정하며, 내부에서 <Routes>, <Route>를 통해 라우팅 구조를 정의
+  라우터 데이터를 명시적으로 로드하거나 관리하는 기능이 제한
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </BrowserRouter>	
+  );
+}
+
+
+
+< RouterProvider >
+
+  React Router v6.4 이상에서 도입된 방식으로, 라우팅을 더 유연하고 동적으로 설정할 수 있도록 설계
+  createBrowserRouter와 함께 사용되며, 데이터 로딩, 에러 핸들링, 동적 라우팅 설정 등이 포함된 라우트 객체 기반의 라우팅을 제공 
+  라우팅 설정이 객체 기반으로 변경되며, 데이터 로드와 에러 처리 기능이 포함
+
+const router = createBrowserRouter([
+  {
+    path: "/", 
+    element: <Home />, 
+    loader: async () => {
+      const data = await fetchDataFromHome();
+      return data;
+    },
+    errorElement: <ErrorPage />
+  }, 
+  {
+    path: "/about", 
+    element: <About />,
+  }, 
+  {
+    path: "/contact", 
+    element: <Contact />,
+  }, 
+]);
+
+function App() {
+  return <RouterProvider router={router} />;
+}
