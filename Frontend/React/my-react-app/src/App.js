@@ -18,6 +18,10 @@ import PasswordChecker from "./ref/PasswordChecker";
 import ScrollBox from "./ref/ScrollBox";
 import IdPwChecker from "./ref/IdPwChecker";
 import LifeCycleSample from "./lifecycle/LifeCycleSample";
+import Info from "./hooks/Info";
+import Average from "./hooks/Average";
+import CounterWithVariable from "./hooks/CounterWithVariable";
+import ChangeCountWithVariable from "./hooks/ChangeCountWithVariable";
 
 function App() {
   return (
@@ -52,7 +56,13 @@ function App() {
       {/* <IdPwChecker /> */}
 
       {/* LifeCycle */}
-      <LifeCycleSample />
+      {/* <LifeCycleSample /> */}
+
+      {/* Hooks */}
+      {/* <Info /> */}
+      {/* <Average /> */}
+      {/* <CounterWithVariable /> */}
+      <ChangeCountWithVariable />
     </>
   );
 }
