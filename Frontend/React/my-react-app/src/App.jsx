@@ -80,7 +80,7 @@ function App() {
       {/* <Theme /> */}
       {/* <ContextForCounter /> */}
       {/* <ContextForDisplay /> */}
-      <CustomHook />
+      {/* <CustomHook /> */}
     </>
   );
 }
