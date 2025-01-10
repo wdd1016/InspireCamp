@@ -1,4 +1,4 @@
-const { createContext } = require("react");
+import { createContext } from "react";
 
 // #1 컨텍스트 생성 ⇒ TodoContext.js
 const TodoContext = createContext();
