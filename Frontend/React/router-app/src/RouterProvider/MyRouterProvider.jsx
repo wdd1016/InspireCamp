@@ -1,12 +1,12 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Layout } from "../browserRouter/LayoutBrowserRouter";
+import { Layout } from "../BrowserRouter/LayoutBrowserRouter";
 import Home from "../Home";
 import About from "../About";
-import { Profiles } from "../browserRouter/SubRoute";
-import { Profile } from "../browserRouter/Parameter";
+import { Profiles } from "../BrowserRouter/SubRoute";
+import { Profile } from "../BrowserRouter/Parameter";
 import Login from "../Login";
 import MyPage from "../MyPage";
-import { NotFound } from "../browserRouter/NotFoundBrowserRouter";
+import { NotFound } from "../BrowserRouter/NotFoundBrowserRouter";
 
 const router = createBrowserRouter([
   {
