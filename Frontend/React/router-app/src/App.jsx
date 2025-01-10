@@ -9,6 +9,7 @@ import { NotFoundBrowserRouter } from "./BrowserRouter/NotFoundBrowserRouter";
 import { NavigateBrowserRouter } from "./BrowserRouter/NavigateBrowserRouter";
 import MyRouterProvider from "./RouterProvider/MyRouterProvider";
 import MovieRouterProvider from "./MovieApp/MovieRouterProvider";
+import MyRestAPIRouterProvider from "./RestAPIApp/MyRestAPIRouterProvider";
 
 function App() {
   return (
@@ -28,7 +29,10 @@ function App() {
       {/* <MyRouterProvider /> */}
 
       {/* MovieApp */}
-      <MovieRouterProvider />
+      {/* <MovieRouterProvider /> */}
+
+      {/* RestAPI */}
+      <MyRestAPIRouterProvider />
     </>
   );
 }
