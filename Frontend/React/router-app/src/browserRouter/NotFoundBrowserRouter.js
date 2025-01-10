@@ -1,12 +1,12 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "../Home";
 import About from "../About";
-import { NavLinkLayout } from "./NavLinkComponent";
+import { NavLinkLayout } from "./NavLinkBrowserRouter";
 import { Profile } from "./Parameter";
 import { Profiles } from "./SubRoute";
-import "./CommonLayout.css";
+import "./LayoutBrowserRouter.css";
 
-function NotFoundComponent() {
+function NotFound() {
   return (
     <div
       style={{
@@ -24,7 +24,7 @@ function NotFoundComponent() {
   );
 }
 
-function NotFound() {
+function NotFoundBrowserRouter() {
   return (
     <BrowserRouter>
       <Routes>
@@ -36,10 +36,10 @@ function NotFound() {
             <Route path=":userid" element={<Profile />} />
           </Route>
         </Route>
-        <Route path="*" element={<NotFoundComponent />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
 }
 
-export { NotFound, NotFoundComponent };
+export { NotFound, NotFoundBrowserRouter };

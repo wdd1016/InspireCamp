@@ -1,20 +1,11 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Link,
-  Outlet,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, Outlet } from "react-router-dom";
 import Home from "../Home";
 import About from "../About";
 import { Profile } from "./Parameter";
 import { Profiles } from "./SubRoute";
-import "./CommonLayout.css";
+import "./LayoutBrowserRouter.css";
 
-function UseNavigateComponent() {
-  const navigate = useNavigate();
-
+function Layout() {
   return (
     <div>
       <header>
@@ -32,8 +23,6 @@ function UseNavigateComponent() {
             <Link to="/profiles">프로파일</Link>
           </li>
         </ul>
-        <button onClick={() => navigate(-1)}>이전 페이지로 이동</button>
-        <button onClick={() => navigate("/info")}>정보 페이지로 이동</button>
       </header>
       <main>
         <Outlet />
@@ -42,11 +31,11 @@ function UseNavigateComponent() {
   );
 }
 
-export default function UseNavigateHook() {
+function LayoutBrowserRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<UseNavigateComponent />}>
+        <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/info" element={<About />} />
@@ -58,3 +47,5 @@ export default function UseNavigateHook() {
     </BrowserRouter>
   );
 }
+
+export { LayoutBrowserRouter, Layout };

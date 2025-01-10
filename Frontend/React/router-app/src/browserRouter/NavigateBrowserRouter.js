@@ -9,11 +9,14 @@ import {
 } from "react-router-dom";
 import Home from "../Home";
 import About from "../About";
+import MyPage from "../MyPage";
+import Login from "../Login";
 import { Profile } from "./Parameter";
 import { Profiles } from "./SubRoute";
-import "./CommonLayout.css";
+import { NotFound } from "./NotFoundBrowserRouter";
+import "./LayoutBrowserRouter.css";
 
-function NavLinkLayout() {
+function NavigateLayout() {
   const navigate = useNavigate();
 
   return (
@@ -39,6 +42,9 @@ function NavLinkLayout() {
           <li>
             <Link to="/profiles">프로파일</Link>
           </li>
+          <li>
+            <Link to="/mypage">마이페이지</Link>
+          </li>
         </ul>
         <button onClick={() => navigate(-1)}>이전 페이지로 이동</button>
         <button onClick={() => navigate("/info")}>정보 페이지로 이동</button>
@@ -50,21 +56,24 @@ function NavLinkLayout() {
   );
 }
 
-function NavLinkComponent() {
+function NavigateBrowserRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<NavLinkLayout />}>
+        <Route element={<NavigateLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/info" element={<About />} />
           <Route path="/profiles" element={<Profiles />}>
             <Route path=":userid" element={<Profile />} />
           </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/mypage" element={<MyPage />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
 }
 
-export { NavLinkLayout, NavLinkComponent };
+export default NavigateBrowserRouter;
