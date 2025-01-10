@@ -76,4 +76,4 @@ function NavigateBrowserRouter() {
   );
 }
 
-export default NavigateBrowserRouter;
+export { NavigateLayout, NavigateBrowserRouter };

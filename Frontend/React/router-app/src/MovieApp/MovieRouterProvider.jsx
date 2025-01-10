@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { NavigateLayout } from "../BrowserRouter/NavigateBrowserRouter";
+import MovieLayout from "./MovieLayout";
 import Home from "../Home";
 import About from "../About";
 import { Profiles } from "../BrowserRouter/SubRoute";
@@ -7,11 +7,13 @@ import { Profile } from "../BrowserRouter/Parameter";
 import Login from "../Login";
 import MyPage from "../MyPage";
 import { NotFound } from "../BrowserRouter/NotFoundBrowserRouter";
+import MovieList from "./MovieList";
+import MovieDetail from "./MovieDetail";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <NavigateLayout />,
+    element: <MovieLayout />,
     children: [
       { path: "/", element: <Home /> },
       { path: "/about", element: <About /> },
@@ -23,13 +25,15 @@ const router = createBrowserRouter([
       },
       { path: "/login", element: <Login /> },
       { path: "/mypage", element: <MyPage /> },
+      { path: "/movieList", element: <MovieList /> },
+      { path: "/movieDetail/:movieid", element: <MovieDetail /> },
     ],
   },
   { path: "*", element: <NotFound /> },
 ]);
 
-function MyRouterProvider() {
+function MovieRouterProvider() {
   return <RouterProvider router={router} />;
 }
 
-export default MyRouterProvider;
+export default MovieRouterProvider;
