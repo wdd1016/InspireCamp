@@ -7,6 +7,7 @@ import UseNavigateBrowserRouter from "./browserRouter/UseNavigateBrowserRouter";
 import { NavLinkBrowserRouter } from "./browserRouter/NavLinkBrowserRouter";
 import { NotFoundBrowserRouter } from "./browserRouter/NotFoundBrowserRouter";
 import NavigateBrowserRouter from "./browserRouter/NavigateBrowserRouter";
+import MyRouterProvider from "./routerProvider/MyRouterProvider";
 
 function App() {
   return (
@@ -20,7 +21,10 @@ function App() {
       {/* <UseNavigateBrowserRouter /> */}
       {/* <NavLinkBrowserRouter /> */}
       {/* <NotFoundBrowserRouter /> */}
-      <NavigateBrowserRouter />
+      {/* <NavigateBrowserRouter /> */}
+
+      {/* RouterProvider */}
+      <MyRouterProvider />
     </>
   );
 }
