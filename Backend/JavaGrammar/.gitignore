@@ -28,6 +28,19 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
+# Sensitive or high-churn files
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+
+# Gradle
+.idea/**/gradle.xml
+.idea/**/libraries
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -41,3 +54,4 @@ bin/
 ### Mac OS ###
 .DS_Store
 /.idea/.gitignore
+/.idea/vcs.xml
