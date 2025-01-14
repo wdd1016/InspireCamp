@@ -1,21 +1,35 @@
-package grammar;
+package polymorphism;
 
-class Fruit { }
-class Apple extends Fruit { }
-class Grape extends Fruit { }
-class Kiwi extends Fruit { }
+class Fruit {
+}
 
-class A {}
-class B extends A { }
-class C extends B { }
-class D extends B { }
+class Apple extends Fruit {
+}
+
+class Grape extends Fruit {
+}
+
+class Kiwi extends Fruit {
+}
+
+class A {
+}
+
+class B extends A {
+}
+
+class C extends B {
+}
+
+class D extends B {
+}
 
 public class Inheritance {
     public static void main(String[] args) {
-        Apple[] apples = { new Apple(), new Apple() };
-        Grape[] grapes = { new Grape(), new Grape() };
-        Kiwi[] kiwies = { new Kiwi(), new Kiwi() };
-        Fruit[] fruits = { new Apple(), new Grape(), new Kiwi() };
+        Apple[] apples = {new Apple(), new Apple()};
+        Grape[] grapes = {new Grape(), new Grape()};
+        Kiwi[] kiwies = {new Kiwi(), new Kiwi()};
+        Fruit[] fruits = {new Apple(), new Grape(), new Kiwi()};
 
         {
             // 다형적 표현이 올바르게 사용된 경우
