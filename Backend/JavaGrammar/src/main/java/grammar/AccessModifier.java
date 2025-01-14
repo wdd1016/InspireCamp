@@ -2,8 +2,6 @@
 // 동일한 목적으로 만들어진 클래스들을 묶어(동일한 공간(폴더)) 관리하는 것
 // ⇒ 클래스명의 충돌을 방지 ⇒ 클래스의 풀네임(full name) ⇒ 패키지명.클래스명
 package grammar;
-import abc.bcd.Test;
-import com.test.*;
 
 // 외부 클래스(external class)
 // public 클래스 외부에 정의한 클래스
@@ -16,7 +14,7 @@ class ExternalClass {
 // 자바 제어자의 한 종류로, 클래스, 멤버(필드, 메서드, 인너 클래스), 생성자 앞에 위치
 // 사용 범위를 정의
 // 클래스의 접근 지정자 ⇒ public, default
-public class PackageAccessModifier {
+public class AccessModifier {
     // public : 동일 패키지의 모든 클래스 + 다른 패키지의 모든 클래스에서 사용 가능
     public void publicFunction() {
         System.out.println("publicFunction");
@@ -38,7 +36,7 @@ public class PackageAccessModifier {
     }
 
     public static void main(String[] args) {
-        PackageAccessModifier accessModifier = new PackageAccessModifier();
+        AccessModifier accessModifier = new AccessModifier();
 
         accessModifier.publicFunction();
         accessModifier.protectedFunction();
