@@ -42,10 +42,7 @@ public class OperatorGroup {
             if (a >= b) return a;
             else return b;
         };
-        int result = scores[0];
-        for (int score : scores) {
-            result = maxOp.applyAsInt(result, score);
-        }
+        int result = newMaxOrMin(maxOp);
         System.out.println("최대값 >>> " + result);
 
 
@@ -53,10 +50,18 @@ public class OperatorGroup {
             if (a <= b) return a;
             else return b;
         };
-        result = scores[0];
-        for (int score : scores) {
-            result = minOp.applyAsInt(result, score);
-        }
+        result = newMaxOrMin(minOp);
         System.out.println("최소값 >>> " + result);
     }
+
+    private static int newMaxOrMin(IntBinaryOperator op) {
+        int result;
+        result = scores[0];
+        for (int score : scores) {
+            result = op.applyAsInt(result, score);
+        }
+        return result;
+    }
+
+
 }

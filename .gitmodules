@@ -1,3 +1,6 @@
 [submodule "Frontend/SearchApp"]
 	path = Frontend/SearchApp
+	url = git@github.com:InspireCampTeam4/frontend.git
+[submodule "Backend/Management"]
+	path = Backend/Management
 	url = git@github.com:InspireCampTeam4/management.git
