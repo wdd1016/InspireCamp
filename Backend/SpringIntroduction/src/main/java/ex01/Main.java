@@ -10,7 +10,7 @@ public class Main {
         String message1 = greeter1.greet("Spring");
         System.out.println(message1);
 
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppContext.class);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(GreetContext.class);
         Greeter greeter2 = context.getBean("greeter", Greeter.class);
         greeter2.setFormat("안녕, %s!!!");
         String message2 = greeter2.greet("스프링");
