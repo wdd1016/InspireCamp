@@ -1,9 +1,11 @@
-package ex01_member.main;
+package member_annotation.main;
 
-import ex01_member.*;
-import ex01_member.config.AppConf1;
-import ex01_member.config.AppConf2;
-import ex01_member.config.MemberContext;
+import ex01_member.DuplicateMemberException;
+import ex01_member.MemberRegisterService;
+import ex01_member.VersionPrinter;
+import member_annotation.*;
+import ex01_member.RegisterRequest;
+import member_annotation.config.AppContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -11,15 +13,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class MainForSpring {
+public class Main {
     private static ApplicationContext applicationContext = null;
 
     // new      : 새로운 회원 데이터를 추가
     // change   : 회원의 패스워드를 변경
-    // exit     : 프로그램을 종료 d
+    // exit     : 프로그램을 종료
     public static void main(String[] args) throws IOException {
-        // applicationContext = new AnnotationConfigApplicationContext(MemberContext.class);
-        applicationContext = new AnnotationConfigApplicationContext(AppConf1.class, AppConf2.class);
+        applicationContext = new AnnotationConfigApplicationContext(AppContext.class);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
@@ -86,7 +87,7 @@ public class MainForSpring {
             return;
         }
 
-        MemberRegisterService registerService = applicationContext.getBean("memberRegisterService", MemberRegisterService.class);
+        MemberRegisterService registerService = applicationContext.getBean(MemberRegisterService.class);
         RegisterRequest reg = new RegisterRequest();
         reg.setEmail(args[1]);
         reg.setName(args[2]);
@@ -112,7 +113,7 @@ public class MainForSpring {
             return;
         }
 
-        ChangePasswordService pwdSvc = applicationContext.getBean("changePasswordService", ChangePasswordService.class);
+        ChangePasswordService pwdSvc = applicationContext.getBean(ChangePasswordService.class);
 
         try {
             pwdSvc.changePassword(args[1], args[2], args[3]);

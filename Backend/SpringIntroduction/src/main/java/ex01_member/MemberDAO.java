@@ -1,10 +1,13 @@
 package ex01_member;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 // Data Access Object
+@Component
 public class MemberDAO {
     private static long nextId = 0;
 

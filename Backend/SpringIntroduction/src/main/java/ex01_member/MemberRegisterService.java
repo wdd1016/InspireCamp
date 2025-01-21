@@ -1,9 +1,11 @@
 package ex01_member;
 
 import com.sun.jdi.request.DuplicateRequestException;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+@Component
 public class MemberRegisterService {
     private MemberDAO memberDAO;
 

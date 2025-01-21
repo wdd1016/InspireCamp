@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 // Spring bean이 어떻게 만들어질지 결정
 @Configuration
-public class AppContext {
+public class MemberContext {
     @Bean
     public MemberDAO memberDAO() {
         return new MemberDAO();
