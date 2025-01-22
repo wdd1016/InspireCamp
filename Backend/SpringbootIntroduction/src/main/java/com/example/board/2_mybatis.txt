@@ -1,0 +1,117 @@
+MyBatis 연동
+
+MyBatis
+    자바 애플리케이션에서 관계형 데이터베이스와 상호작용하기 위한 퍼시스턴스 프레임워크
+    객체와 SQL 구문의 자동 맵핑을 제공해 개발 생산성을 향상
+
+    @Configuration
+    @PropertySource("classpath:/application.properties")
+    public class DatabaseConfiguration {
+        @Autowired
+        private ApplicationContext applicationContext;
+
+        @Bean
+        @ConfigurationProperties(prefix = "spring.datasource.hikari")
+        HikariConfig hikariConfig() {
+            return new HikariConfig();
+        }
+
+        @Bean
+        DataSource dataSource() {
+            DataSource dataSource = new HikariDataSource(hikariConfig());
+            System.out.println(dataSource);
+            return dataSource;
+        }
+
+        // SqlSessionFactory: SqlSession 객체를 생성하는 역할을 담당하는 인터페이스
+        //                    데이터베이스 연결, 트랜잭션 관리, 매퍼 파일의 위치 등 MyBatis 설정 정보를 포함
+        // SqlSession: MyBatis에서 데이터베이스와 상호작용(SQL 실행, 트랜잭션을 관리, ...)하는 인터페이스
+        @Bean
+        SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+            SqlSessionFactoryBean sessionFactoryBean = new SqlSessionFactoryBean();
+            sessionFactoryBean.setDataSource(dataSource);
+            sessionFactoryBean.setMapperLocations(
+                applicationContext.getResources("classpath:/mapper/**/sql-*.xml")
+            );
+            return sessionFactoryBean.getObject();
+        }
+
+        // SqlSessionTemplate: MyBatis와 스프링 프레임워크를 통합할 때 사용하는 클래스
+        //                     SqlSesstion 인터페이스를 구현
+        @Bean
+        SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
+            return new SqlSessionTemplate(sqlSessionFactory);
+        }
+    }
+
+    => org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'sqlSessionFactory' defined in class path resource
+    [board/configuration/DatabaseConfiguration.class]: Failed to instantiate [org.apache.ibatis.session.SqlSessionFactory]:
+    Factory method 'sqlSessionFactory' threw exception with message: class path resource [mapper/] cannot be resolved to URL because it does not exist
+
+BoardDto.java
+    @Data
+    public class BoardDto {
+        private int boardIdx;
+        private String title;
+        private String contents;
+        private int hitCnt;
+        private String createdDt;
+        private String createdId;
+        private String updaterDt;
+        private String updaterId;
+    }
+
+    => Camel case(Java), snake case(DB) 변환 문제
+       : MyBatis 설정을 추가
+         application.properties
+            mybatis.configuration.map-underscore-to-camel-case=true
+
+DatabaseConfiguration.java
+    @Configuration
+    @PropertySource("classpath:/application.properties")
+    public class DatabaseConfiguration {
+        @Autowired
+        private ApplicationContext applicationContext;
+
+        @Bean
+        @ConfigurationProperties(prefix = "spring.datasource.hikari")
+        HikariConfig hikariConfig() {
+            return new HikariConfig();
+        }
+
+        @Bean
+        DataSource dataSource() {
+            DataSource dataSource = new HikariDataSource(hikariConfig());
+            System.out.println(dataSource);
+            return dataSource;
+        }
+
+        // SqlSessionFactory: SqlSession 객체를 생성하는 역할을 담당하는 인터페이스
+        //                    데이터베이스 연결, 트랜잭션 관리, 매퍼 파일의 위치 등 MyBatis 설정 정보를 포함
+        // SqlSession: MyBatis에서 데이터베이스와 상호작용(SQL 실행, 트랜잭션을 관리, ...)하는 인터페이스
+        @Bean
+        SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+            SqlSessionFactoryBean sessionFactoryBean = new SqlSessionFactoryBean();
+            sessionFactoryBean.setDataSource(dataSource);
+            sessionFactoryBean.setMapperLocations(
+                applicationContext.getResources("classpath:/mapper/**/sql-*.xml")
+            );
+            return sessionFactoryBean.getObject();
+        }
+
+        // SqlSessionTemplate: MyBatis와 스프링 프레임워크를 통합할 때 사용하는 클래스
+        //                     SqlSesstion 인터페이스를 구현
+        @Bean
+        SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
+            return new SqlSessionTemplate(sqlSessionFactory);
+        }
+
+        @Bean
+        @ConfigurationProperties(prefix = "mybatis.configuration")
+        org.apache.ibatis.session.Configuration mybatisConfig() {
+            return new org.apache.ibatis.session.Configuration();
+        }
+    }
+
+
+
