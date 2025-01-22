@@ -1,0 +1,127 @@
+요청 구조
+
+GET URI HTTP/1.1	⇐ 요청 시작 → 방식(method) URL 프로토콜
+요청헤더: 헤더값	⇐ 헤더
+요청헤더: 헤더값
+요청헤더: 헤더값
+			⇐ 헤더 끝 (아무 내용 없이 한 줄 띄움)
+name=value&name=value	⇐ 요청 본문 (서버로 전달하는 값으로 방식에 따라 있을 수 도 있고 없을 수 도 있음)
+
+
+URL
+http://www.test.com:8080/path/subpath/file?name=value&name=value#abcd
+~~~~   ~~~~~~~~~~~~ ~~~~
+|      호스트주소   포트
+|      도메인/IP
++-- 스킴 = 프로토콜
+
+curl -v http://localhost:8080
+* Host localhost:8080 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:8080...
+* Connected to localhost (::1) port 8080
+* using HTTP/1.x
+> GET / HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/8.10.1
+> Accept: */*
+>
+< HTTP/1.1 200
+< Content-Type: text/plain;charset=UTF-8
+< Content-Length: 14
+< Date: Wed, 22 Jan 2025 01:49:32 GMT
+<
+Hello World!!!* Connection #0 to host localhost left intact
+
+
+자동 설정
+
+@SpringBootApplication
+public class SampleApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(SampleApplication.class, args);
+	}
+
+}
+
+스타터 의존성
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+독립 실행 ⇒ 내장 웹 서버를 포함
+
+DevTools ⇒ 코드 변경 시 자동 재시작, 라이브 리로딩, 개발 모드 전용 설정 등 사용이 가능
+
+프로덕션 준비 기능 ⇒ actuator ⇒ 모니터 및 관리 기능을 제공
+
+간편한 설정
+
+CLI 지원
+
+MVC 패턴
+
+모델(model)
+    애플리케이션의 데이터를 나타내며, 데이터의 구조와 비즈니스 로직을 정의하는 데 사용
+    도메인 객체, 폼 객체, 데이터 전송 객체, 리포지토리 등으로 구성
+
+    도메인 객체(Domain Object)
+        애플리케이션의 주요 비즈니스 개념을 나타내는 객체 (예: 사용자를 나타내는 User 클래스)
+        일반적으로 엔터티(Entity)라고도 하며, 데이터베이스의 테이블과 매핑됨
+    폼 객체(Form Object)
+        사용자 입력을 받아서 저장하는 객체
+        주로 웹 애플리케이션에서 폼 데이터를 캡처하고 검증하는데 사용
+        도메인 객체와 비슷하지만, 주로 사용자 인터페이스와 상호작용하는데 사용
+    데이터 전송 객체(DTO, Data Transfer Object)
+        계층 간 데이터를 전달하는데 사용되는 객체
+        주로 서비스 계층과 프레젠테이션 계층 간 데이터 전송에 사용
+        도메인 객체와 구분하여 사용되며, 필요한 데이터만 포함하도록 설계
+    리포지토리(Repository)
+        데이터베이스와 상호작용하는 계층
+        CRUD 작업을 처리
+        Spring Data JPA와 같은 라이브러리를 사용하여 리포지토리를 쉽게 구현이 가능
+
+
+뷰(view)
+    사용자에게 데이터를 표시하고 사용자 인터페이스를 제공하는 역할
+    모델 데이터를 표시하고, 사용자가 입력한 데이터를 컨트롤러로 전달하는 중간 매개체로 작동
+    JSP, Thymeleaf, FreeMarker, Velocity와 같은 템플릿 엔진을 사용
+    뷰 리졸버(View Resolver) : 컨트롤러가 반환한 뷰 이름을 실제 뷰로 매핑하는 역할
+
+
+컨트롤러(controller)
+    사용자 요청을 처리하고 적절한 응답을 생성하는 역할
+    사용자가 요청한 URL을 매핑하여 해당 요청을 처리하는 메서드를 호출하고, 모델 데이터를 생성하거나 수정한 후에 적절한 뷰를 선택하여 응답을 반환
+
+    요청 매핑 (Request Mapping)
+        URL 경로와 HTTP 메서드(GET, POST, PUT, DELETE 등)를 매핑하여 해당 요청을 처리하는 메서드를 지정
+        @RequestMapping, @GetMapping, @PostMapping, @PutMapping, @DeleteMapping 등의 애너테이션을 사용
+    모델 처리 (Model Handling)
+        모델 객체를 사용하여 데이터를 뷰에 전달
+        Model, ModelMap, ModelAndView를 사용하여 모델 데이터를 처리
+    뷰 선택 (View Selection)
+        적절한 뷰 이름을 반환하여, 뷰 리졸버(View Resolver)가 이를 실제 뷰로 매핑하고 렌더링
+    폼 데이터 처리 (Form Handling)
+        사용자 입력 폼 데이터를 처리하고 검증
+        @ModelAttribute, @Valid 애너테이션을 사용하여 폼 데이터를 바인딩하고 검증
+
+DAL(Data Access Layer, 데이터 접근 계층)
+    애플리케이션의 다른 부분과 저장소 간의 상호작용을 담당하는 계층
+    비즈니스 로직과 데이터 접근 코드를 분리해 애플리케이션의 유지 보수성과 확장성을 높이는 것을 목적
+
+DAO(Data Access Object)
+    데이터베이스와 상호작용을 담당하는 객체
+    개발자는 SQL을 사용해 CRUD 기능을 직접 구현해야 함
+    애플리케이션의 Object      (SQL을 이용해 CRUD)      DB의 Record 단위의 처리
+                   ~~~~~~             ^                      ~~~~~~
+                     |                |                         |
+                     +----------------|-------------------------+
+                                      |
+                             불일치를 해결해야 함
+
