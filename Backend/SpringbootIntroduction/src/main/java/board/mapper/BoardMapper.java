@@ -1,8 +1,8 @@
-package com.example.board.mapper;
+package board.mapper;
 
 import java.util.List;
 
-import com.example.board.dto.BoardDto;
+import board.dto.BoardDto;
 import org.apache.ibatis.annotations.Mapper;
 
 // 특징              @Mapper	                                                @Service

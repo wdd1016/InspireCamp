@@ -1,18 +1,14 @@
-package com.example.board.service;
+package board.service;
 
-import java.util.Iterator;
 import java.util.List;
 
-import com.example.board.common.FileUtils;
-import com.example.board.dto.BoardDto;
-import com.example.board.dto.BoardFileDto;
-import com.example.board.mapper.BoardMapper;
+import board.common.FileUtils;
+import board.dto.BoardDto;
+import board.dto.BoardFileDto;
+import board.mapper.BoardMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 // @Transactional

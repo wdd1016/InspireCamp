@@ -1,4 +1,4 @@
-package com.example.board.common;
+package board.common;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -14,7 +14,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.example.board.dto.BoardFileDto;
+import board.dto.BoardFileDto;
 
 
 @Component

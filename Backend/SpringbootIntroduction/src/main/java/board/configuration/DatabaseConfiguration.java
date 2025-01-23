@@ -1,4 +1,4 @@
-package com.example.board.configuration;
+package board.configuration;
 
 import javax.sql.DataSource;
 

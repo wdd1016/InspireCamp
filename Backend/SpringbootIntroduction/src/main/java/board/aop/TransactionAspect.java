@@ -1,4 +1,4 @@
-package com.example.board.aop;
+package board.aop;
 
 import java.util.Arrays;
 
@@ -46,7 +46,7 @@ public class TransactionAspect {
     @Bean
     Advisor transactionAdviceAdvisor() {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
-        pointcut.setExpression("execution(* com.example.board..service.*Impl.*(..))");
+        pointcut.setExpression("execution(* board..service.*Impl.*(..))");
 
         return new DefaultPointcutAdvisor(pointcut, transactionAdvice());
     }

@@ -1,4 +1,4 @@
-package com.example.board.aop;
+package board.aop;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component  // SpringBoot에서는 @EnableAspectAutoProxy 어노테이션을 추가하지 않아도 자동으로 AOP를 활성화
 public class LoggerAspect {
-    @Pointcut("execution(* com.example.board..controller.*Controller.*(..)) || execution(* com.example.board..service.*ServiceImpl.*(..)) || execution(* com.example.board..mapper.*Mapper.*(..))")
+    @Pointcut("execution(* board..controller.*Controller.*(..)) || execution(* board..service.*ServiceImpl.*(..)) || execution(* board..mapper.*Mapper.*(..))")
     private void loggerTarget() {
 
     }
