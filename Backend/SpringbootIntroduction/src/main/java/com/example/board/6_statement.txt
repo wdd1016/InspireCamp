@@ -1,0 +1,12 @@
+int id = 100;
+Statement statement = Connection.createStatement();
+String sql = "select * from t_board where id = " + id;	⇐ 쿼리 생성을 개발자가 담당
+statement.executeQuery(sql);
+
+
+int id = 100;
+String sql = "select * from t_board where id = ?";
+PreparedStatement statement = Connection.prepareStatement(sql);
+statement.setInt(1, id);					⇐ 쿼리 생성을 PreparedStatement가 담당
+statement.executeQuery();
+

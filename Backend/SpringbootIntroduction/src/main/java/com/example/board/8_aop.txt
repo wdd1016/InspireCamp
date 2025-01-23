@@ -1,0 +1,54 @@
+AOP
+컨트롤러, 서비스, 매퍼의 메서드가 호출될 때 각 메서드의 경로와 이름을 로그로 출력하는 공통 모듈을 구현
+
+
+    build.gradle
+    dependencies {
+        //implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+        compileOnly 'org.projectlombok:lombok'
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        runtimeOnly 'com.mysql:mysql-connector-j'
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+        annotationProcessor 'org.projectlombok:lombok'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+        // https://mvnrepository.com/artifact/org.bgee.log4jdbc-log4j2/log4jdbc-log4j2-jdbc4.1
+        implementation group: 'org.bgee.log4jdbc-log4j2', name: 'log4jdbc-log4j2-jdbc4.1', version: '1.16'
+
+        // https://mvnrepository.com/artifact/org.springframework/spring-aspects
+        implementation 'org.springframework:spring-aspects:6.2.2'
+    }
+
+
+    // SpringBoot에서는 @EnableAspectJAutoProxy 어노테이션을 추가하지 않아도 자동으로 AOP 설정을 활성화
+    @Aspect
+    @Slf4j
+    @Component
+    public class LoggerAspect {
+        @Pointcut("execution(* board..controller.*Controller.*(..)) || execution(* board..service.*ServiceImpl.*(..)) || execution(* board..mapper.*Mapper.*(..))")
+        private void loggerTarget() {
+
+        }
+
+        @Around("loggerTarget()")
+        public Object logPrinter(ProceedingJoinPoint joinPoint) throws Throwable {
+            String type = "";
+            String className = joinPoint.getSignature().getDeclaringTypeName();
+            String methodName = joinPoint.getSignature().getName();
+
+            if (className.indexOf("Controller") > -1) {
+                type = "[Controller]";
+            } else if (className.indexOf("Service") > -1) {
+                type = "[Service]";
+            } else if (className.indexOf("Mapper") > -1) {
+                type = "[Mapper]";
+            }
+
+            log.debug(type + " " + className + "." + methodName);
+            return joinPoint.proceed();
+        }
+    }
