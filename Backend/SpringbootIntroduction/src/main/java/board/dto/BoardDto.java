@@ -2,6 +2,8 @@ package board.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class BoardDto {
     private int boardIdx;
@@ -12,4 +14,7 @@ public class BoardDto {
     private String createdId;
     private String updaterDt;
     private String updaterId;
+
+    // 첨부 파일 정보를 저장할 필드를 추가
+    private List<BoardFileDto> fileInfoList;
 }

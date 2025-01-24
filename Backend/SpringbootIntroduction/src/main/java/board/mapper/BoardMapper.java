@@ -3,7 +3,9 @@ package board.mapper;
 import java.util.List;
 
 import board.dto.BoardDto;
+import board.dto.BoardFileDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.repository.query.Param;
 
 // 특징              @Mapper	                                                @Service
 // 주체              MyBatis                                             	Spring
@@ -23,6 +25,12 @@ public interface BoardMapper {
     void deleteBoard(BoardDto boardDto);
 
     void updateHitCnt(int boardIdx);
+
+    void insertBoardFileList(List<BoardFileDto> fileInfoList);
+
+    List<BoardFileDto> selectBoardFileList(int boardIdx);
+
+    BoardFileDto selectBoardFileInfo(@Param("idx") int idx, @Param("boardIdx") int boardIdx);
 }
 
 // MyBatis가 이런식으로 만들어줌.

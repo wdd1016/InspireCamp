@@ -70,17 +70,18 @@ public class FileUtils {
 
                     // 저장에 사용할 파일 이름을 조합
                     String storedFileName = Long.toString(System.nanoTime()) + originalFileExtension;
+                    String finalDir = Paths.get(storedDir, storedFileName).toString();
 
                     // 파일 정보를 리스트에 저장
                     BoardFileDto dto = new BoardFileDto();
                     dto.setBoardIdx(boardIdx);
                     dto.setFileSize(Long.toString(file.getSize()));
                     dto.setOriginalFileName(file.getOriginalFilename());
-                    dto.setStoredFilePath(storedDir + storedFileName);
+                    dto.setStoredFilePath(finalDir);
                     fileInfoList.add(dto);
 
                     // 파일 저장
-                    String finalDir = Paths.get(storedDir, storedFileName).toString();
+
                     fileDir = new File(finalDir);
                     file.transferTo(fileDir);
                 }
