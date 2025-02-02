@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시판</title>
+    <link rel="stylesheet" th:href="@{/css/board.css}"/>
+</head>
+<body>
+<div class="container">
+    <h2>게시판 등록</h2>
+    <form id="frm" method="post" action="/book/insertBook" enctype="multipart/form-data">
+        <table class="board_detail">
+            <tr>
+                <td>도서 제목</td>
+                <td><input type="text" id="title" name="title"/></td>
+            </tr>
+            <tr>
+                <td>저자</td>
+                <td><input type="text" id="author" name="author"/></td>
+            </tr>
+            <tr>
+                <td>출판사</td>
+                <td><input type="text" id="publisher" name="publisher"/></td>
+            </tr>
+            <tr>
+                <td>출판일</td>
+                <td><input type="date" id="publishedDate" name="publishedDate"/></td>
+            </tr>
+            <tr>
+                <td>isbn</td>
+                <td><input type="text" id="isbn" name="isbn"/></td>
+            </tr>
+            <tr>
+                <td colspan="2"><textarea id="description" name="description"></textarea></td>
+            </tr>
+        </table>
+        <input type="file" id="file" name="file" accept="image/*"/>
+        <input type="submit" id="submit" value="저장" class="btn"/>
+    </form>
+</div>
+</body>
+</html>
