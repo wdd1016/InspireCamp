@@ -13,7 +13,7 @@ export default function BoardDetail() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/board/${boardIdx}`)
+      .get(`http://localhost:8080/api/v2/board/${boardIdx}`)
       .then((res) => {
         res && res.data && setBoard(res.data);
         res && res.data && setTitle(res.data.title);
@@ -34,7 +34,7 @@ export default function BoardDetail() {
   const updateButtonClick = (e) => {
     e.preventDefault();
     axios
-      .put(`http://localhost:8080/api/board/${boardIdx}`, {
+      .put(`http://localhost:8080/api/v2/board/${boardIdx}`, {
         title,
         contents,
       })
@@ -49,7 +49,7 @@ export default function BoardDetail() {
   const deleteButtonClick = (e) => {
     e.preventDefault();
     axios
-      .delete(`http://localhost:8080/api/board/${boardIdx}`)
+      .delete(`http://localhost:8080/api/v2/board/${boardIdx}`)
       .then((res) => {
         res && res.status === 200 && navigate(`/list`);
       })
@@ -63,7 +63,7 @@ export default function BoardDetail() {
     const { boardIdx, idx, originalFileName } = file;
 
     axios({
-      url: `http://localhost:8080/api/board/file?boardIdx=${boardIdx}&idx=${idx}`,
+      url: `http://localhost:8080/api/v2/board/file?boardIdx=${boardIdx}&idx=${idx}`,
       method: "GET",
       responseType: "blob", // binary data
     }).then((res) => {
@@ -138,7 +138,7 @@ export default function BoardDetail() {
             board.fileInfoList.map((file, index) => (
               <p key={index}>
                 <a
-                  // href={`http://localhost:8080/api/board/file?boardIdx=${file.boardIdx}&idx=${file.idx}`}
+                  // href={`http://localhost:8080/api/v2/board/file?boardIdx=${file.boardIdx}&idx=${file.idx}`}
                   onClick={(e) => fileDownload(e, file)}
                 >
                   {file.originalFileName} ({file.fileSize}kb)

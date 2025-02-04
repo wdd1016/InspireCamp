@@ -40,12 +40,12 @@ export default function BoardWrite() {
     e.preventDefault();
     axios({
       method: "post",
-      url: "http://localhost:8080/api/board",
+      url: "http://localhost:8080/api/v2/board",
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     })
       .then((res) => {
-        res && res.status === 200 && navigate("/list");
+        res && navigate("/list");
       })
       .catch((err) => {
         console.log(err);

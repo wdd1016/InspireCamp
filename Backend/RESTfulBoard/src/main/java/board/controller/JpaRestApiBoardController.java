@@ -1,9 +1,8 @@
 package board.controller;
 
-import board.dto.BoardDto;
-import board.dto.BoardFileDto;
-import board.dto.BoardListResponse;
-import board.service.BoardService;
+import board.entity.BoardEntity;
+import board.entity.BoardFileEntity;
+import board.service.JpaBoardService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,42 +27,28 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
-// @CrossOrigin(origins = "http://localhost:5173")
-public class RestApiBoardController {
+@RequestMapping("/api/v2")
+public class JpaRestApiBoardController {
     @Autowired
-    private BoardService boardService;
+    private JpaBoardService boardService;
 
     // 목록 조회
-    // @CrossOrigin(origins = "http://localhost:5173")
     @Operation(summary = "게시판 목록 조회", description = "등록된 게시물 목록을 조회해서 반환합니다.")
     @GetMapping("/board")
-    public List<BoardListResponse> openBoardList() throws Exception {
-        List<BoardDto> boardList = boardService.selectBoardList();
-
-        List<BoardListResponse> results = new ArrayList<>();
-        /*
-        for (BoardDto boardDto : boardList) {
-            *//* BoardListResponse boardListResponse = new BoardListResponse();
-            boardListResponse.setBoardIdx(boardDto.getBoardIdx());
-            boardListResponse.setTitle(boardDto.getTitle());
-            boardListResponse.setHitCnt(boardDto.getHitCnt());
-            boardListResponse.setCreatedDt(boardDto.getCreatedDt());
-            results.add(boardListResponse); *//*
-            BoardListResponse boardListResponse = new ModelMapper().map(boardDto, BoardListResponse.class);
-            results.add(boardListResponse);
+    public ResponseEntity<List<BoardEntity>> openBoardList() throws Exception {
+        try {
+            List<BoardEntity> boardList = boardService.selectBoardList();
+            return ResponseEntity.ok(boardList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        */
-        boardList.forEach(boardDto -> results.add(new ModelMapper().map(boardDto, BoardListResponse.class)));
-        return results;
     }
 
     // 저장 처리
     @PostMapping(value = "/board", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Object> insertBoard(@RequestParam("board") String boardData, MultipartHttpServletRequest request) throws Exception {
-        // boardData = { "title": "제목", ... }
         ObjectMapper objectMapper = new ObjectMapper();
-        BoardDto boardDto = objectMapper.readValue(boardData, BoardDto.class);
+        BoardEntity boardDto = objectMapper.readValue(boardData, BoardEntity.class);
         Map<String, String> result = new HashMap<>();
         try {
             boardService.insertBoard(boardDto, request);
@@ -81,24 +66,23 @@ public class RestApiBoardController {
     @Parameter(name = "boardIdx", description = "게시물 아이디", required = true)
     @GetMapping("/board/{boardIdx}")
     public ResponseEntity<Object> openBoardDetail(@PathVariable("boardIdx") int boardIdx) throws Exception {
-        BoardDto boardDto = boardService.selectBoardDetail(boardIdx);
-        if (boardDto == null) {
+        BoardEntity boardEntity = boardService.selectBoardDetail(boardIdx);
+        if (boardEntity == null) {
             Map<String, Object> result = new HashMap<>();
             result.put("code", HttpStatus.NOT_FOUND.value());
             result.put("name", HttpStatus.NOT_FOUND.name());
             result.put("message", "게시판 번호 " + boardIdx + "와 일치하는 게시물이 존재하지 않습니다.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
         } else {
-            return ResponseEntity.status(HttpStatus.OK).body(boardDto);
-            // return ResponseEntity.ok(boardDto);
+            return ResponseEntity.status(HttpStatus.OK).body(boardEntity);
         }
     }
 
     // 수정 처리
     @PutMapping("/board/{boardIdx}")
-    public void updateBoard(@PathVariable("boardIdx") int boardIdx, @RequestBody BoardDto boardDto) throws Exception {
-        boardDto.setBoardIdx(boardIdx);
-        boardService.updateBoard(boardDto);
+    public void updateBoard(@PathVariable("boardIdx") int boardIdx, @RequestBody BoardEntity boardEntity) throws Exception {
+        boardEntity.setBoardIdx(boardIdx);
+        boardService.updateBoard(boardEntity);
     }
 
     // 삭제 처리
@@ -110,17 +94,17 @@ public class RestApiBoardController {
     // 첨부파일 다운로드
     @GetMapping("/board/file")
     public void downloadBoardFile(@RequestParam("idx") int idx, @RequestParam("boardIdx") int boardIdx, HttpServletResponse response) throws Exception {
-        BoardFileDto boardFileDto = boardService.selectBoardFileInfo(idx, boardIdx);
-        if (ObjectUtils.isEmpty(boardFileDto)) {
+        BoardFileEntity boardFileEntity = boardService.selectBoardFileInfo(idx, boardIdx);
+        if (ObjectUtils.isEmpty(boardFileEntity)) {
             return;
         }
 
-        Path path = Paths.get(boardFileDto.getStoredFilePath());
+        Path path = Paths.get(boardFileEntity.getStoredFilePath());
         byte[] file = Files.readAllBytes(path);
 
         response.setContentType("application/octet-stream");
         response.setContentLength(file.length);
-        response.setHeader("Content-Disposition", "attachment; fileName=\"" + URLEncoder.encode(boardFileDto.getOriginalFileName(), "UTF-8") + "\";");
+        response.setHeader("Content-Disposition", "attachment; fileName=\"" + URLEncoder.encode(boardFileEntity.getOriginalFileName(), "UTF-8") + "\";");
         response.setHeader("Content-Transfer-Encoding", "binary");
         response.getOutputStream().write(file);
         response.getOutputStream().flush();
@@ -128,3 +112,4 @@ public class RestApiBoardController {
     }
 
 }
+
