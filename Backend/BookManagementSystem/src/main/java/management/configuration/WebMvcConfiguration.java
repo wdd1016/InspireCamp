@@ -2,6 +2,7 @@ package management.configuration;
 
 import management.interceptor.LoggerInterceptor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -18,5 +19,13 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         String myDir = System.getProperty("user.dir");
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + myDir + "/uploads/");
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry
+                .addMapping("/api/**")
+                .allowedOrigins("http://localhost:5173")
+                .allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 }

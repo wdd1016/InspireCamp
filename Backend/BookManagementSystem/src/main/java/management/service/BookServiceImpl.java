@@ -50,10 +50,10 @@ public class BookServiceImpl implements BookService {
     @Override
     public BooksDto selectBookDetail(Long bookId) {
         BooksDto booksDto = bookMapper.selectBookDetail(bookId);
-        BookImagesDto bookFileInfo = bookMapper.selectBookFile(bookId);
-        booksDto.setFileInfo(bookFileInfo);
-        System.out.println(booksDto.getFileInfo());
-
+        if (booksDto != null) {
+            BookImagesDto bookFileInfo = bookMapper.selectBookFile(bookId);
+            booksDto.setFileInfo(bookFileInfo);
+        }
         return booksDto;
     }
 
