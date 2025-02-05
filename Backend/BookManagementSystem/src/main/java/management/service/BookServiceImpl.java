@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 // @Transactional
@@ -30,11 +31,15 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void insertBook(BooksDto booksDto, MultipartHttpServletRequest request) {
+        booksDto.setCreatedAt(LocalDateTime.now());
+        booksDto.setUpdatedAt(LocalDateTime.now());
+
         bookMapper.insertBook(booksDto);
         try {
             BookImagesDto fileInfo = fileUtils.parseFileInfo(booksDto.getBookId(), request);
 
             if (fileInfo != null && fileInfo.getBookId() != null) {
+                fileInfo.setCreatedAt(LocalDateTime.now());
                 bookMapper.insertBookFile(fileInfo);
             }
         } catch (Exception e) {
@@ -54,6 +59,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void updateBook(BooksDto booksDto) {
+        booksDto.setUpdatedAt(LocalDateTime.now());
         bookMapper.updateBook(booksDto);
     }
 

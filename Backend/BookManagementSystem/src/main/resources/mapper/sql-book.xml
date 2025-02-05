@@ -3,25 +3,25 @@
 <mapper namespace="management.mapper.BookMapper">
     <select id="selectBookList" resultType="management.dto.BooksDto">
         select book_id, title, author, FORMATDATETIME(published_date, 'yyyy-MM-dd') as published_date
-        from Books
+        from books
         where deleted_yn = 'N'
         order by book_id desc
     </select>
 
     <insert id="insertBook" parameterType="management.dto.BooksDto"
             useGeneratedKeys="true" keyProperty="bookId">
-        insert into Books(title, author, publisher, published_date, isbn, description, created_at, deleted_yn)
+        insert into books(title, author, publisher, published_date, isbn, description, created_at, deleted_yn)
         values (#{title}, #{author}, #{publisher}, #{publishedDate}, #{isbn}, #{description}, now(), 'N')
     </insert>
 
     <insert id="insertBookFile" parameterType="management.dto.BookImagesDto">
-        insert into BookImages(book_id, image_url, created_at)
+        insert into bookimages(book_id, image_url, created_at)
         values (#{bookId}, #{imageUrl}, now())
     </insert>
 
     <select id="selectBookFile" parameterType="java.lang.Long" resultType="management.dto.BookImagesDto">
         select book_id, image_url, created_at
-        from BookImages
+        from bookimages
         where book_id = #{bookId}
     </select>
 
@@ -35,20 +35,20 @@
                description,
                FORMATDATETIME(created_at, 'yyyy-MM-dd')     as created_at,
                FORMATDATETIME(updated_at, 'yyyy-MM-dd')     as updated_at
-        from Books
+        from books
         where deleted_yn = 'N'
           and book_id = #{bookId}
     </select>
 
     <update id="updateBook" parameterType="management.dto.BooksDto">
-        update Books
+        update books
         set description = #{description}
           , updated_at  = now()
         where book_id = #{bookId}
     </update>
 
     <delete id="deleteBook" parameterType="management.dto.BooksDto">
-        update Books
+        update books
         set deleted_yn = 'Y'
           , updated_at = now()
         where book_id = #{bookId}

@@ -10,5 +10,4 @@ public class BookImagesDto {
     private Long bookId;
     private String imageUrl;
     private LocalDateTime createdAt;
-
 }
