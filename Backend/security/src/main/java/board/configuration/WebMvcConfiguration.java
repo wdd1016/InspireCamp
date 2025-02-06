@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoggerIwnterceptor());
+        registry.addInterceptor(new LoggerInterceptor());
     }
 
     @Override
@@ -18,5 +18,10 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         registry.addMapping("/api/**")
                 .allowedOrigins("http://localhost:5173")
                 .allowedMethods("GET", "POST", "PUT", "DELETE");
+        registry
+                .addMapping("/loginProc")
+                .exposedHeaders("token") // 커스텀 헤더의 값을 사용할 수 있도록 허용
+                .allowedOrigins("http://localhost:5173")
+                .allowedMethods("POST");
     }
 }

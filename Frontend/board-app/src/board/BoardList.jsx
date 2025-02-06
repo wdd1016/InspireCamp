@@ -7,7 +7,11 @@ export default function BoardList() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/v2/board")
+      .get("http://localhost:8080/api/v2/board", {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      })
       .then((response) => {
         response && response.data && setDatas(response.data);
       })
