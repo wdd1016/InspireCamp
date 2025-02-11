@@ -12,8 +12,8 @@ public class SecurityApplication {
         SpringApplication.run(SecurityApplication.class, args);
     }
 
-    @Bean
-    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
-        return new HiddenHttpMethodFilter();
-    }
+    // @Bean
+    // public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+    //     return new HiddenHttpMethodFilter();
+    // }
 }

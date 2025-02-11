@@ -3,8 +3,13 @@ package board.security;
 import java.io.IOException;
 import java.util.Arrays;
 
+import board.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,7 +28,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -55,15 +64,29 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(subject);
+
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
+                = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        usernamePasswordAuthenticationToken.setDetails(
+                new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+
         filterChain.doFilter(request, response);
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        log.debug("shouldNotFilter >>>>>>>");
+
         // "/"를 넣어버리면 모든 Url이 exclude 된다.
-        String[] excludePath = {"/login", "/loginProc", "/join", "/joinProc"};
+        // String[] excludePath = {"/login", "/loginProc", "/join", "/joinProc"};
+        String[] excludePath = {"/loginProc", "/joinProc"};
 
         String uri = request.getRequestURI();
-        return Arrays.stream(excludePath).anyMatch(uri::startsWith);
+        boolean result = Arrays.stream(excludePath).anyMatch(uri::startsWith);
+
+        log.debug("shouldNotFilter result >>>>>>>" + result);
+        return result;
     }
 }

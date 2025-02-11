@@ -1,22 +1,32 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function BoardList() {
   const [datas, setDatas] = useState([]);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
+    const token = sessionStorage.getItem("token");
+
     axios
       .get("http://localhost:8080/api/v2/board", {
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
         response && response.data && setDatas(response.data);
       })
       .catch((error) => {
-        console.error(error);
+        console.log(error);
+        if (error.status === 401) {
+          alert("[인증 토큰 누락] 로그인 후 다시 시도해 주세요.");
+        } else if (error.status === 403) {
+          alert("[인증 토큰 오류] 로그인 후 다시 시도해 주세요.");
+        }
+        navigate("/");
       });
   }, []);
 

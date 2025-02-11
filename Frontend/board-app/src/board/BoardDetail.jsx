@@ -12,8 +12,11 @@ export default function BoardDetail() {
   const { boardIdx } = useParams();
 
   useEffect(() => {
+    const token = sessionStorage.getItem("token");
     axios
-      .get(`http://localhost:8080/api/v2/board/${boardIdx}`)
+      .get(`http://localhost:8080/api/v2/board/${boardIdx}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((res) => {
         res && res.data && setBoard(res.data);
         res && res.data && setTitle(res.data.title);
@@ -21,6 +24,12 @@ export default function BoardDetail() {
       })
       .catch((error) => {
         console.error(error);
+        if (error.status === 401) {
+          alert("[인증 토큰 누락] 로그인 후 다시 시도해 주세요.");
+        } else if (error.status === 403) {
+          alert("[인증 토큰 오류] 로그인 후 다시 시도해 주세요.");
+        }
+        navigate("/");
       });
   }, []);
 
@@ -34,27 +43,49 @@ export default function BoardDetail() {
   const updateButtonClick = (e) => {
     e.preventDefault();
     axios
-      .put(`http://localhost:8080/api/v2/board/${boardIdx}`, {
-        title,
-        contents,
-      })
+      .put(
+        `http://localhost:8080/api/v2/board/${boardIdx}`,
+        {
+          title,
+          contents,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        }
+      )
       .then((res) => {
         res && res.status === 200 && navigate(`/list`);
       })
       .catch((error) => {
         console.error(error);
+        if (error.status === 401) {
+          alert("[인증 토큰 누락] 로그인 후 다시 시도해 주세요.");
+        } else if (error.status === 403) {
+          alert("[인증 토큰 오류] 로그인 후 다시 시도해 주세요.");
+        }
       });
   };
 
   const deleteButtonClick = (e) => {
     e.preventDefault();
     axios
-      .delete(`http://localhost:8080/api/v2/board/${boardIdx}`)
+      .delete(`http://localhost:8080/api/v2/board/${boardIdx}`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      })
       .then((res) => {
         res && res.status === 200 && navigate(`/list`);
       })
       .catch((error) => {
         console.error(error);
+        if (error.status === 401) {
+          alert("[인증 토큰 누락] 로그인 후 다시 시도해 주세요.");
+        } else if (error.status === 403) {
+          alert("[인증 토큰 오류] 로그인 후 다시 시도해 주세요.");
+        }
       });
   };
 
@@ -65,7 +96,10 @@ export default function BoardDetail() {
     axios({
       url: `http://localhost:8080/api/v2/board/file?boardIdx=${boardIdx}&idx=${idx}`,
       method: "GET",
-      responseType: "blob", // binary data
+      responseType: "blob", // binary data,
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      },
     }).then((res) => {
       const href = URL.createObjectURL(res.data);
 

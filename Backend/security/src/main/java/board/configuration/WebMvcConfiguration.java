@@ -20,7 +20,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE");
         registry
                 .addMapping("/loginProc")
-                .exposedHeaders("token") // 커스텀 헤더의 값을 사용할 수 있도록 허용
                 .allowedOrigins("http://localhost:5173")
                 .allowedMethods("POST");
     }

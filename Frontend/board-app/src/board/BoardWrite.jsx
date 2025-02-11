@@ -38,17 +38,29 @@ export default function BoardWrite() {
 
   const handlerSubmit = (e) => {
     e.preventDefault();
+
+    const token = sessionStorage.getItem("token");
+
     axios({
       method: "post",
       url: "http://localhost:8080/api/v2/board",
       data: formData,
-      headers: { "Content-Type": "multipart/form-data" },
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((res) => {
-        res && navigate("/list");
+        res & navigate("/list");
       })
       .catch((err) => {
         console.log(err);
+        if (error.status === 401) {
+          alert("[인증 토큰 누락] 로그인 후 다시 시도해 주세요.");
+        } else if (error.status === 403) {
+          alert("[인증 토큰 오류] 로그인 후 다시 시도해 주세요.");
+        }
+        navigate("/");
       });
   };
 
