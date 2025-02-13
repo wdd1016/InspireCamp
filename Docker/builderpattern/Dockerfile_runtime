@@ -1,0 +1,4 @@
+FROM alpine
+WORKDIR /goapp
+COPY hello.out .
+ENTRYPOINT [ "./hello.out" ]

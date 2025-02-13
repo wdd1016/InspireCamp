@@ -1,0 +1,178 @@
+데이터 관리
+https://docs.docker.com/storage/
+
+
+
+
+Volumn
+볼륨 생성
+c:\docker\gugudan> docker volume ls
+DRIVER	VOLUME NAME
+local 	pack-cache-136d4c5eec46.build
+local 	pack-cache-136d4c5eec46.launch
+
+c:\docker\gugudan> docker volume create myvolume
+myvolume
+
+c:\docker\gugudan> docker volume ls
+DRIVER	VOLUME NAME
+local 	myvolume
+local 	pack-cache-136d4c5eec46.build
+local 	pack-cache-136d4c5eec46.launch
+
+
+생성한 볼륨을 사용하는 컨테이너를 실행
+c:\docker\gugudan> docker container run -it --name myvolumecontainer -v myvolume:/temp ubuntu
+                                                                     ~~~~~~~~~~~~~~~~~
+Unable to find image 'ubuntu:latest' locally                         컨테이너의 /temp 디렉터리를   
+latest: Pulling from library/ubuntu	                                 myvolume과 연결
+5a7813e071bf: Already exists
+Digest: sha256:72297848456d5d37d1262630108ab308d3e9ec7ed1c3286a32fe09856619a782
+Status: Downloaded newer image for ubuntu:latest
+root@fe18819de172:/#
+root@fe18819de172:/# echo hello, volume >> /temp/hello_volume
+root@fe18819de172:/# exit
+exit
+
+c:\docker\gugudan>
+c:\docker\gugudan> docker container ls -a
+CONTAINER ID   IMAGE 	COMMAND   	CREATED     	STATUS
+ 	PORTS 	NAMES
+fe18819de172   ubuntu	"/bin/bash"   3 minutes ago   Exited (0) About a minute ago         	myvolumecontainer
+
+
+동일한 볼륨을 사용하는 컨테이너를 추가로 실행
+c:\docker\gugudan> docker container run -it --name ourvolumecontainer -v myvolume:/volume_data ubuntu
+
+root@f1d758ad58c0:/# ls /volume_data
+hello_volume
+root@f1d758ad58c0:/# cat /volume_data/hello_volume
+hello, volume							⇐ myvolumecontainer 컨테이너에서 생성한 파일
+root@f1d758ad58c0:/#
+root@f1d758ad58c0:/# exit
+exit
+
+c:\docker\gugudan>
+
+
+볼륨의 저장 위치 확인
+c:\docker\gugudan> docker inspect --type volume myvolume	⇐ docker volume inspect myvolume
+[
+	{
+    	"CreatedAt": "2025-02-12T06:53:11Z",
+    	"Driver": "local",
+    	"Labels": null,
+    	"Mountpoint": "/var/lib/docker/volumes/myvolume/_data",
+    	"Name": "myvolume",
+    	"Options": null,
+    	"Scope": "local"
+	}
+]
+
+
+컨테이너를 실행할 때 -v 옵션으로 존재하지 않는 볼륨을 지정 ⇒ 볼륨이 자동으로 생성
+c:\docker\gugudan> docker volume ls
+DRIVER	VOLUME NAME
+local 	myvolume
+local 	pack-cache-136d4c5eec46.build
+local 	pack-cache-136d4c5eec46.launch
+
+c:\docker\gugudan> docker container run -it --name myvolume -v newvolume:/root ubuntu
+root@22d2ffdacc9e:/# echo Hello, New Volume >> /root/hello_new_volume
+root@22d2ffdacc9e:/# exit
+exit
+
+c:\docker\gugudan>
+c:\docker\gugudan> docker container run -it --name ourvolume -v newvolume:/temp ubuntu
+root@b9e1e2cb15df:/# ls /temp
+hello_new_volume
+root@b9e1e2cb15df:/# cat /temp/hello_new_volume
+Hello, New Volume
+root@b9e1e2cb15df:/# exit
+exit
+
+c:\docker\gugudan> docker volume ls
+DRIVER	VOLUME NAME
+local 	myvolume
+local 	newvolume
+local 	pack-cache-136d4c5eec46.build
+local 	pack-cache-136d4c5eec46.launch
+
+
+bind mount
+MySQL 이미지를 이용해서 데이터베이스 컨테이너를 실행
+c:\docker\gugudan> docker container run -d --name wordpressdb 
+-e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=wordpress 	⇐ 환경변수를 설정(전달)
+-v c:\docker\mysql_data:/var/lib/mysql mysql:5.7
+   ~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~
+   호스트의 디렉터리    컨테이너 내부의 디렉터리 ⇐ MySQL 데이터와 설정이 저장되는 디렉터리
+
+c:\docker\gugudan> dir c:\docker\mysql_data		⇐ MySQL 컨테이너가 실행되면서 설정 정보를 저장
+ C 드라이브의 볼륨에는 이름이 없습니다.
+ 볼륨 일련 번호: 6C07-B63C
+
+ c:\docker\mysql_data 디렉터리
+
+2025-02-12  오후 04:12	<DIR>      	.
+2025-02-12  오후 04:11	<DIR>      	..
+2025-02-12  오후 04:12            	56 auto.cnf
+2025-02-12  오후 04:12         	1,680 ca-key.pem
+2025-02-12  오후 04:12         	1,112 ca.pem
+2025-02-12  오후 04:12         	1,112 client-cert.pem
+2025-02-12  오후 04:12         	1,680 client-key.pem
+2025-02-12  오후 04:12    	79,691,776 ibdata1
+2025-02-12  오후 04:12    	12,582,912 ibtmp1
+2025-02-12  오후 04:12         	1,318 ib_buffer_pool
+2025-02-12  오후 04:12    	50,331,648 ib_logfile0
+2025-02-12  오후 04:12    	50,331,648 ib_logfile1
+2025-02-12  오후 04:12	<DIR>      	mysql
+2025-02-12  오후 04:12	<JUNCTION> 	mysql.sock [...]
+2025-02-12  오후 04:12	<DIR>      	performance_schema
+2025-02-12  오후 04:12         	1,680 private_key.pem
+2025-02-12  오후 04:12           	452 public_key.pem
+2025-02-12  오후 04:12         	1,112 server-cert.pem
+2025-02-12  오후 04:12         	1,680 server-key.pem
+2025-02-12  오후 04:12	<DIR>      	sys
+2025-02-12  오후 04:12	<DIR>      	wordpress
+          	15개 파일     	192,949,866 바이트
+           	6개 디렉터리  393,785,524,224 바이트 남음
+
+
+c:\docker\gugudan> docker container ls
+CONTAINER ID   IMAGE   	COMMAND               	CREATED     	STATUS     	PORTS             	NAMES
+f06e49d0ceb5   mysql:5.7   "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes   3306/tcp, 33060/tcp   wordpressdb
+
+
+워드프레스(wordpress) 이미지를 이용해서 웹 애플리케이션 컨테이너를 실행
+c:\docker\gugudan> docker container run -d 
+--link wordpressdb:mysql 				⇐ 별칭 → 연결할 컨테이너:별칭
+-e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=password 
+-p 80 wordpress
+
+c:\docker\gugudan> docker container ls
+CONTAINER ID   IMAGE   	COMMAND               	CREATED          	STATUS      	PORTS               	NAMES
+7e5e0e021b7b   wordpress   "docker-entrypoint.s…"   About a minute ago   Up 57 seconds   0.0.0.0:55438->80/tcp   adoring_shockley
+f06e49d0ceb5   mysql:5.7   "docker-entrypoint.s…"   8 minutes ago    	Up 8 minutes	3306/tcp, 33060/tcp 	wordpressdb
+
+
+브라우저를 이용해서 워드프레스 컨테이너로 접속
+
+
+
+워드프레스와 MySQL 컨테이너를 종료한 후 다시 시작
+c:\docker\gugudan> docker container rm -f wordpressdb 7e5e0e021b7b
+wordpressdb       	⇐ MySQL 컨테이너 이름
+7e5e0e021b7b         	⇐ 워드프레스 컨테이너 ID
+
+
+c:\docker\gugudan> docker container run -d --name wordpressdb -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=wordpress -v c:\docker\mysql_data:/var/lib/mysql mysql:5.7
+a9db188f04b24aa7885bfc113ec4fa553b39dd333069663b616c111a974f2a1e
+
+c:\docker\gugudan> docker container run -d --link wordpressdb:mysql -e WORDPRESS_DB_NAME=wordpress -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_PASSWORD=password -p 55438:80 wordpress
+ea12c65dbb948d2016efeac595fc6e609945ece8d9f43bddb7ba145842d51486
+
+
+
+웹 브라우저로 접속해 보면, 이전에 설정한 정보와 동일하게 적용되는 것을 확인할 수 있음 ⇒ 이전에 생성한 사용자 정보가 유효
+http://localhost:55438/
+http://localhost:55438/wp-admin/		⇐ 이전에 생성한 사용자로 로그인 가능

@@ -1,0 +1,29 @@
+docker container run --name sm -d -p 80:8080 adrizcorp/mariohtml5_arm64v8:latest
+docker container logs sm	
+docker container attach sm
+docker container ls -a
+docker container start sm
+docker container ls
+docker container exec -it sm /bin/bash
+mario@c84974b74c76:/usr/local/tomcat$ set | grep HOSTNAME	
+docker container cp sm:/usr/local/tomcat/webapps/ROOT .
+cd ROOT
+code .
+
+호스트의 파일을 컨테이너 내부로 복사
+C:\docker\ROOT\index.html 파일 내용을 수정
+
+<!DOCTYPE html>
+<html>
+	<head>
+    	<title>Infinite Mario - JavaScript ^..^</title>
+    	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	</head>
+
+docker container cp index.html sm:/usr/local/tomcat/webapps/ROOT/
+
+docker container run -d -p 8081:80 nginx
+docker container ls
+docker container exec ??? ls /usr/share/nginx/html
+docker container cp . ???:/usr/share/nginx/html/
+docker container exec ??? ls -l /usr/share/nginx/html
