@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>메인</title>
+</head>
+<body>
+<h1>메인 입니다.</h1>
+<h2>로그인하지 않고 누구나 사용 가능합니다.</h2>
+<h3 th:if="${errorMessage != null}" th:text="${errorMessage}"></h3>
+<h3>
+    Welcome,
+    <span th:if="${session.user != null}" th:text="${session.user.username}"></span>
+    <span th:unless="${session.user != null}">Guest</span>
+</h3>
+
+<a href="/">메인 페이지</a> |
+<a href="/home">홈 페이지</a> |
+<a href="/board">게시판 페이지</a> |
+<a href="/admin">관리자 페이지</a>
+</body>
+</html>
