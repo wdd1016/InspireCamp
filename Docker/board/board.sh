@@ -6,3 +6,4 @@ cd backend
 cd ..
 docker container run -p 9090:8080 --name springboot --link mysql:mysql backend:0.0.1-SNAPSHOT
 
+docker image build --build-arg SPRINGBOOT_ADDRESS=localhost -t board-app:v3 .
