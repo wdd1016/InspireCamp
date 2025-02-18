@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: config-server
+  profiles:
+    active:
+      # native : exist in local file storage (external storage X)
+      - native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations:
+            # path for configuration file
+            - classpath:/config
+          # - file:///tmp/config
+          # git:
+          # uri: https://github.com/wdd1016/license-service.git
+          # search-paths: config
+
+server:
+  port: 8071
