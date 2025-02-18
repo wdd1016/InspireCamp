@@ -1,0 +1,1 @@
+docker container run -d -p 5432:5432 -e POSTGRES_DB=ostock_dev -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -v ./init.sql:/docker-entrypoint-initdb.d/1-init.sql -v ./data.sql:/docker-entrypoint-initdb.d/2-data.sql postgres

@@ -12,6 +12,7 @@ spring:
           search-locations:
             # path for configuration file
             - classpath:/config
+            - classpath:/board
           # - file:///tmp/config
           # git:
           # uri: https://github.com/wdd1016/license-service.git
@@ -19,3 +20,7 @@ spring:
 
 server:
   port: 8071
+
+encrypt:
+  # 암호화에 사용하는 비밀키 (임의의 값을 사용)
+  key: fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo
