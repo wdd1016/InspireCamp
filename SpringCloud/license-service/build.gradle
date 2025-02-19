@@ -45,6 +45,10 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
 }

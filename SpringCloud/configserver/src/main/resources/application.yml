@@ -11,8 +11,10 @@ spring:
         native:
           search-locations:
             # path for configuration file
-            - classpath:/config
             - classpath:/board
+            - classpath:/discovery
+            - classpath:/license
+            - classpath:/organization
           # - file:///tmp/config
           # git:
           # uri: https://github.com/wdd1016/license-service.git
