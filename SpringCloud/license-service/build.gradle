@@ -45,12 +45,13 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    implementation 'io.github.resilience4j:resilience4j-spring-boot3'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
 }
 
 tasks.withType(JavaCompile) {

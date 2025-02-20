@@ -1,8 +1,7 @@
 package com.optimagrowth.license.service;
 
-import java.util.Locale;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.TimeoutException;
 
 import com.optimagrowth.license.config.ServiceConf;
 import com.optimagrowth.license.model.Organization;
@@ -10,6 +9,7 @@ import com.optimagrowth.license.repository.LicenseRepository;
 import com.optimagrowth.license.service.client.OrganizationDiscoveryClient;
 import com.optimagrowth.license.service.client.OrganizationFeignClient;
 import com.optimagrowth.license.service.client.OrganizationRestTemplateClient;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -30,6 +30,54 @@ public class LicenseService {
 
     @Autowired
     ServiceConf config;
+
+    private void randomlyRunLong() throws TimeoutException {
+        Random rand = new Random();
+        int randomNum = rand.nextInt((3 - 1) + 1) + 1;
+        if (randomNum == 3)
+            sleep();
+    }
+
+    private void sleep() throws TimeoutException {
+        try {
+            System.out.println("Sleep");
+            Thread.sleep(5000);
+            throw new java.util.concurrent.TimeoutException();
+        } catch (InterruptedException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    private int count = 0;
+
+    // @CircuitBreaker(name = "licenseService")
+    @CircuitBreaker(name = "licenseService", fallbackMethod = "getLicenseByOrganizationFallback")
+    public List<License> getLicenseByOrganization(String organizationId) throws TimeoutException {
+        // randomlyRunLong();
+        // 서킷 브레이크의 동작을 쉽게 확인할 수 있도록 수정
+        count++;
+        log.info(">>> getLicenseByOrganization() is called ... " + count);
+        try {
+            Thread.sleep(3000);
+            throw new java.util.concurrent.TimeoutException();
+        } catch (InterruptedException e) {
+        }
+        log.info(">>> findByOrganizationId() call ... " + count);        // 호출되지 않음
+
+        return licenseRepository.findByOrganizationId(organizationId);
+    }
+
+    private List<License> getLicenseByOrganizationFallback(String organizationId, Throwable t) {
+        log.error(">>> " + t.getMessage());
+
+        List<License> fallbackList = new ArrayList<>();
+        License license = new License();
+        license.setLicenseId("0000-0000-0000");
+        license.setOrganizationId(organizationId);
+        license.setProductName("Sorry no licensing information currently available");
+        fallbackList.add(license);
+        return fallbackList;
+    }
 
     public License getLicense(String licenseId, String organizationId) {
         License license = licenseRepository.findByOrganizationIdAndLicenseId(organizationId, licenseId);
