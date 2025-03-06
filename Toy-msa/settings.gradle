@@ -1,2 +1,2 @@
 rootProject.name = 'toy-msa'
-include 'service-discovery', 'first-service', 'config-service', 'apigateway-service', 'second-service'
+include 'service-discovery', 'first-service', 'config-service', 'apigateway-service', 'second-service', 'user-service'
