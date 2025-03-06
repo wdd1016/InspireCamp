@@ -15,6 +15,7 @@ spring:
             - classpath:/discovery
             - classpath:/license
             - classpath:/organization
+            - classpath:/gateway
           # - file:///tmp/config
           # git:
           # uri: https://github.com/wdd1016/license-service.git

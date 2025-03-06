@@ -55,14 +55,14 @@ public class LicenseService {
     public List<License> getLicenseByOrganization(String organizationId) throws TimeoutException {
         // randomlyRunLong();
         // 서킷 브레이크의 동작을 쉽게 확인할 수 있도록 수정
-        count++;
-        log.info(">>> getLicenseByOrganization() is called ... " + count);
-        try {
-            Thread.sleep(3000);
-            throw new java.util.concurrent.TimeoutException();
-        } catch (InterruptedException e) {
-        }
-        log.info(">>> findByOrganizationId() call ... " + count);        // 호출되지 않음
+        // count++;
+        // log.info(">>> getLicenseByOrganization() is called ... " + count);
+        // try {
+        //     Thread.sleep(3000);
+        //     throw new java.util.concurrent.TimeoutException();
+        // } catch (InterruptedException e) {
+        // }
+        // log.info(">>> findByOrganizationId() call ... " + count);        // 호출되지 않음
 
         return licenseRepository.findByOrganizationId(organizationId);
     }

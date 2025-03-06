@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: gateway-server
+  config:
+    import: "optional:configserver:http://config-server:8071"
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: licensing-service
+          predicates:
+            - Path=/licensingService/**
+          uri: lb://LICENSING-SERVICE
+          filters:
+            - RewritePath=/licensingService/(?<segment>.*), /${segment}
+        - id: organization-service
+          predicates:
+            - Path=/organizationService/**
+          uri: lb://ORGANIZATION-SERVICE
+          filters:
+            - RewritePath=/organizationService/(?<segment>.*), /${segment}
