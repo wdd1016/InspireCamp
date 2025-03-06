@@ -1,0 +1,2 @@
+./gradlew clean build -x test
+java -jar build/libs/first-service-1.0.jar
