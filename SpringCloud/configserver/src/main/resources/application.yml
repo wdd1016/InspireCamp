@@ -18,8 +18,8 @@ spring:
             - classpath:/gateway
           # - file:///tmp/config
           # git:
-          # uri: https://github.com/wdd1016/license-service.git
-          # search-paths: config
+          # uri: https://github.com/wdd1016/InspireCamp.git
+          # search-paths: SpringCloud/config
 
 server:
   port: 8071
