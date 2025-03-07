@@ -1,0 +1,5 @@
+http://localhost:20000/h2-console
+
+jdbc:h2:mem:testdb
+
+SELECT * FROM CATALOG
