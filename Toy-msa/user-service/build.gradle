@@ -37,6 +37,8 @@ dependencies {
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+
     testImplementation 'org.springframework.security:spring-security-test'
 }
 
