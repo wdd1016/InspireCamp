@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    active: native
+    active: git
   application:
     name: config-service
   cloud:
@@ -13,8 +13,10 @@ spring:
           search-locations: classpath:/git-local-repo
         # search-locations: file:///C://work//git-local-repo
         git: #default
-          uri: https://github.com/joneconsulting/spring-cloud-config
-          default-label: master
+          # uri: https://github.com/joneconsulting/spring-cloud-config
+          # git에 커밋할때마다 변화를 감지하여 서버 업데이트
+          uri: file:///tmp/git-local-repo
+          default-label: main
         # username: <github-id>
         # password: <gihub-accessToken>
         bootstrap: true
