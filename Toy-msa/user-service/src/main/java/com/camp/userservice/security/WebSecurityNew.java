@@ -18,6 +18,9 @@ import org.springframework.security.web.access.intercept.RequestAuthorizationCon
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.IpAddressMatcher;
 
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.function.Supplier;
 
 
@@ -27,6 +30,7 @@ public class WebSecurityNew {
     private UserService userService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private Environment env;
+    private String myIPAddrSpEL;
 
     public static final String ALLOWED_IP_ADDRESS = "127.0.0.1";
     public static final String SUBNET = "/32";
@@ -36,6 +40,18 @@ public class WebSecurityNew {
         this.env = env;
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.myIPAddrSpEL = "hasIpAddress('127.0.0.1') or hasIpAddress('" + getIPAddress() + "')";
+    }
+
+    private String getIPAddress() {
+        try (final DatagramSocket socket = new DatagramSocket()) {
+            // 외부 IP (구글 DNS 서버)를 대상으로 연결합니다.
+            socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+            return socket.getLocalAddress().getHostAddress();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     @Bean
@@ -62,7 +78,7 @@ public class WebSecurityNew {
 //                        .requestMatchers("/**").access(this::hasIpAddress)
                                 .requestMatchers("/**").access(
                                         // '172.30.1.48' -> Remote Address Required, Please enter your IP (127.0.0.1 : 403 Forbidden)
-                                        new WebExpressionAuthorizationManager("hasIpAddress('127.0.0.1') or hasIpAddress('172.30.1.76')")) // host pc ip address
+                                        new WebExpressionAuthorizationManager(myIPAddrSpEL)) // host pc ip address
                                 .anyRequest().authenticated()
                 )
                 .authenticationManager(authenticationManager)
