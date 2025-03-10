@@ -9,7 +9,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     // Optional Bus
-    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+    // implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
 
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'

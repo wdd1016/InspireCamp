@@ -1,7 +1,12 @@
 encrypt:
-#      key: abcdefghijklmnopqrstuvwxyz0123456789
-    key-store:
-        location: file://${user.home}/Desktop/git/toy-msa/config-service/apiEncryptionKey.jks
-#        location: file:/apiEncryptionKey.jks
-        password: test1234
-        alias: apiEncryptionKey
+  #  key: abcdefghijklmnopqrstuvwxyz0123456789
+  key-store:
+    location: classpath:/apiEncryptionKey.jks
+    #    location: file:/apiEncryptionKey.jks
+    password: test1234
+    alias: apiEncryptionKey
+
+# JDK keytool
+# keytool -genkeypair -alias apiEncryptionKey -keyalg RSA \
+# -dname "CN=Juyoung Jeong, OU=API Development, O=juyoung.co.kr, L=Seoul, C=KR" \
+# -keypass "test1234" -keystore apiEncryptionKey.jks -storepass "test1234"

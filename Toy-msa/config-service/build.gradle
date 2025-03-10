@@ -4,7 +4,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     // 필요 시 주석 해제
-    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+    // implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
 }
 
 
