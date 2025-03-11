@@ -40,7 +40,7 @@ public class WebSecurityNew {
         this.env = env;
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.myIPAddrSpEL = "hasIpAddress('127.0.0.1') or hasIpAddress('" + getIPAddress() + "')";
+        this.myIPAddrSpEL = String.format("hasIpAddress('127.0.0.1') or hasIpAddress('%s')", getIPAddress());
     }
 
     private String getIPAddress() {

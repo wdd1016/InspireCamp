@@ -51,7 +51,7 @@ greeting:
 
 logging:
   level:
-    com.example.userservice.client: DEBUG
+    com.camp.userservice.client: DEBUG
   pattern:
     correlation: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
 

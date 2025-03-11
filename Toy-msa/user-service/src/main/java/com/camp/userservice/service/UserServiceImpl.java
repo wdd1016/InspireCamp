@@ -102,13 +102,13 @@ public class UserServiceImpl implements UserService {
         /* #1 Connect to order-service using a rest template */
         /* @LoadBalanced 로 선언헀으면, apigateway-service로 호출 못함 */
         /* http://ORDER-SERVICE/order-service/1234-45565-34343423432/orders */
-        String orderUrl = String.format(Objects.requireNonNull(env.getProperty("order-service.url")), userId);
-//         String orderUrl = String.format("http://127.0.0.1:8000/order-service/%s/orders", userId);
-        ResponseEntity<List<ResponseOrder>> orderListResponse =
-                restTemplate.exchange(orderUrl, HttpMethod.GET, null,
-                        new ParameterizedTypeReference<List<ResponseOrder>>() {
-                        });
-        ordersList = orderListResponse.getBody();
+        // String orderUrl = String.format(Objects.requireNonNull(env.getProperty("order-service.url")), userId);
+        // String orderUrl = String.format("http://127.0.0.1:8000/order-service/%s/orders", userId);
+        // ResponseEntity<List<ResponseOrder>> orderListResponse =
+        //         restTemplate.exchange(orderUrl, HttpMethod.GET, null,
+        //                 new ParameterizedTypeReference<List<ResponseOrder>>() {
+        //                 });
+        // ordersList = orderListResponse.getBody();
 
         /* Using a feign client */
         /* #2 Feign exception handling */

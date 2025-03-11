@@ -12,7 +12,7 @@ import java.util.List;
 public interface OrderServiceClient {
 
     @GetMapping("/order-service/{userId}/orders")
-//    @GetMapping("/order-service/{userId}/orders_wrong")
-//    ResponseEntity<List<ResponseOrder>> getOrders(@PathVariable String userId);
+        // @GetMapping("/order-service/{userId}/orders_wrong")
+        // ResponseEntity<List<ResponseOrder>> getOrders(@PathVariable String userId);
     List<ResponseOrder> getOrders(@PathVariable String userId);
 }

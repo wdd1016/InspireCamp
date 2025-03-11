@@ -15,6 +15,7 @@ import java.time.Duration;
 
 @SpringBootApplication
 @EnableDiscoveryClient
+// open feign을 사용하기 위해 어노테이션 등록
 @EnableFeignClients
 public class UserServiceApplication {
 
@@ -23,6 +24,7 @@ public class UserServiceApplication {
     }
 
     @Bean
+    // @LoadBalanced 로 선언헀으면, apigateway-service로 호출 못함
     @LoadBalanced
     public RestTemplate getRestTemplate() {
         int TIMEOUT = 5000;
