@@ -1,0 +1,37 @@
+docker pull apache/kafka:latest
+
+docker run -d -p 9092:9092 --name broker apache/kafka:latest
+
+docker ps -a
+docker logs afca95526021
+
+// docker exec -it broker bash
+
+Topic은 기본적으로 여러개의 Broker에 걸쳐서 만듦
+각각의 Broker를 구분하여 내부에 생기는 것을 Partition.
+(분산 저장 가능 -> 복구 가능, 속도 떨어짐)
+
+// 카프카 토픽 생성
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092 --partitions 1
+-> Created topic quickstart-events.
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
+-> quickstart-events
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic quickstart-events
+
+// Consumer 2개 (이전 발행한것도 받음 : --from-beginning)
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic quickstart-events --from-beginning
+
+// Producer
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic quickstart-events
+
+// Consumer
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic quickstart-events --partition 0 --offset 1
+
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
+
+// stock sync test
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic example-catalog-topic --from-beginning
+
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic example-catalog-topic
+
+{"productId":"CATALOG-001","qty":500,"unitPrice":1000,"totalPrice":200000,"orderId":"482f88d8-4798-408e-a9eb-8e89d0b34a09","userId":"12509719-6517-4628-ab72-0a5f45ba696b"}
