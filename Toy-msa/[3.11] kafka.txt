@@ -11,6 +11,9 @@ Topic은 기본적으로 여러개의 Broker에 걸쳐서 만듦
 각각의 Broker를 구분하여 내부에 생기는 것을 Partition.
 (분산 저장 가능 -> 복구 가능, 속도 떨어짐)
 
+// 카프카 다운로드 (~/Desktop 에 넣음)
+https://dlcdn.apache.org/kafka/3.9.0/kafka_2.13-3.9.0.tgz
+
 // 카프카 토픽 생성
 bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092 --partitions 1
 -> Created topic quickstart-events.

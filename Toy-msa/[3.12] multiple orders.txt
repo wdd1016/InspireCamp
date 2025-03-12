@@ -1,0 +1,81 @@
+docker network create ecommerce-network
+
+// mariadb docker-compose.yml dir
+docker compose up -d
+
+docker exec -it order-service-db-1 bash
+mariadb -hlocalhost -uroot -p
+
+create table orders (id int auto_increment primary key,
+                     user_id varchar(50) not null,
+                     product_id varchar(20) not null,
+                     order_id varchar(50) not null,
+                     qty int default 0,
+                     unit_price int default 0,
+                     total_price int default 0,
+                     created_at datetime default now()
+);
+
+// orders topic 확인 (consumer)
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic orders --from-beginning
+
+// kafka connect 실행
+bash ~/Desktop/kafka_2.12-3.9.0/bin/connect-distributed.sh ~/Desktop/kafka_2.12-3.9.0/config/connect-distributed.properties
+
+// JDBC Connector 설치
+https://www.confluent.io/hub/confluentinc/kafka-connect-jdbc
+-> confluentinc-kafka-connect-jdbc-10.8.2 폴더를 kafka_2.12-3.9.0 폴더 내부로 이동
+
+~/Desktop/kafka_2.12-3.9.0/config/connect-distributed.properties
+끝에
+plugin.path=/Users/{username}/Desktop/kafka_2.12-3.9.0/confluentinc-kafka-connect-jdbc-10.8.2/lib
+추가ㄴ
+
+~/.m2/repository/org/mariadb/jdbc/mariadb-java-client/2.7.2/mariadb-java-client-2.7.2.jar
+을 복사하여  ~/Desktop/kafka_2.12-3.9.0/libs 에 추가
+
+// kafka connect 다시 실행 (bash ~/Desktop/kafka_2.12-3.9.0/bin/connect-distributed.sh ~/Desktop/kafka_2.12-3.9.0/config/connect-distributed.properties)
+-> http://localhost:8083/connector-plugins 로 JdbcSinkConnector, JdbcSourceConnector 확인
+
+POST 요청 : http://localhost:8083/connectors (json)
+{
+  "name": "my-source-connect",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "connection.url": "jdbc:mariadb://localhost:3306/mydb",
+    "connection.user": "root",
+    "connection.password": "test1357",
+    "mode": "incrementing",
+    "incrementing.column.name": "id",
+    "validate.non.null": "false",
+    "table.whitelist": "my_users",
+    "topic.prefix": "my_topic_",
+    "tasks.max": "1"
+  }
+}
+
+// 그 외 get 요청들..
+
+// my_users 테이블 생성
+CREATE TABLE users (
+                       id INT AUTO_INCREMENT PRIMARY KEY,
+                       user_id VARCHAR(20) NOT NULL,
+                       pwd VARCHAR(20) NOT NULL,
+                       name VARCHAR(20) NOT NULL,
+                       created_at DATETIME DEFAULT NOW()
+);
+
+POST 요청 : http://localhost:8083/connectors (json)
+{
+  "name": "my-sink-connect",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+    "connection.url": "jdbc:mariadb://localhost:3306/mydb",
+    "connection.user": "root",
+    "connection.password": "test1357",
+    "auto.create": "true",
+    "delete.enabled": "false",
+    "tasks.max": "1",
+    "topics": "my_topic_users"
+  }
+}
