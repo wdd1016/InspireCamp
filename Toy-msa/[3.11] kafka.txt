@@ -38,3 +38,8 @@ bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-console-consumer.sh --bootstrap-server
 bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic example-catalog-topic
 
 {"productId":"CATALOG-001","qty":500,"unitPrice":1000,"totalPrice":200000,"orderId":"482f88d8-4798-408e-a9eb-8e89d0b34a09","userId":"12509719-6517-4628-ab72-0a5f45ba696b"}
+
+
+// Topic 삭제
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic reply-catalog-topic
+

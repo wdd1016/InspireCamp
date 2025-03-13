@@ -1,0 +1,103 @@
+docker network create ecommerce-network
+
+// mariadb docker-compose.yml dir
+docker compose up -d
+
+docker exec -it order-service-db-1 bash
+mariadb -hlocalhost -uroot -p
+
+create table orders (id int auto_increment primary key,
+                     user_id varchar(50) not null,
+                     product_id varchar(20) not null,
+                     order_id varchar(50) not null,
+                     qty int default 0,
+                     unit_price int default 0,
+                     total_price int default 0,
+                     created_at datetime default now()
+);
+
+// orders topic 확인 (consumer)
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic orders --from-beginning
+
+// kafka connect 실행
+bash ~/Desktop/kafka_2.12-3.9.0/bin/connect-distributed.sh ~/Desktop/kafka_2.12-3.9.0/config/connect-distributed.properties
+
+// JDBC Connector 설치
+https://www.confluent.io/hub/confluentinc/kafka-connect-jdbc
+-> confluentinc-kafka-connect-jdbc-10.8.2 폴더를 kafka_2.12-3.9.0 폴더 내부로 이동
+
+~/Desktop/kafka_2.12-3.9.0/config/connect-distributed.properties
+끝에
+plugin.path=/Users/{username}/Desktop/kafka_2.12-3.9.0/confluentinc-kafka-connect-jdbc-10.8.2/lib
+추가ㄴ
+
+~/.m2/repository/org/mariadb/jdbc/mariadb-java-client/2.7.2/mariadb-java-client-2.7.2.jar
+을 복사하여  ~/Desktop/kafka_2.12-3.9.0/libs 에 추가
+
+// kafka connect 다시 실행 (bash ~/Desktop/kafka_2.12-3.9.0/bin/connect-distributed.sh ~/Desktop/kafka_2.12-3.9.0/config/connect-distributed.properties)
+-> http://localhost:8083/connector-plugins 로 JdbcSinkConnector, JdbcSourceConnector 확인
+
+// Source connect
+0. users 테이블 생성
+CREATE TABLE users (
+                       id INT AUTO_INCREMENT PRIMARY KEY,
+                       user_id VARCHAR(20) NOT NULL,
+                       name VARCHAR(20) NOT NULL,
+                       created_at DATETIME DEFAULT NOW()
+);
+1. Connector plugin 종류 확인 (GET http://localhost:8083/connector-plugins)
+2. Connect를 이용해서 Source connect 생성 (POST http://localhost:8083/connectors)
+{
+  "name": "my-source-connect",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "connection.url": "jdbc:mariadb://localhost:3306/mydb",
+    "connection.user": "root",
+    "connection.password": "test1357",
+    "mode": "incrementing",
+    "incremental.column.name": "id",
+    "validate.non.null": "false",
+    "table.whitelist": "users",
+    "topic.prefix": "my_topic_",
+    "tasks.max": "1"
+  }
+}
+3. Source connect 목록 확인 (GET http://localhost:8083/connectors)
+4. 생성 된 Source connect 상태 확인 (GET http://localhost:8083/(소스커넥트_이름)/status)
+5. 데이터베이스에 입력 후 데이터가 자동으로 생성되어 토픽에 입력되는지 확인
+(bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my_topic_users)
+
+// Sink Connect
+1. Connect를 이용해서 Sink connect 생성 (POST http://localhost:8083/connectors)
+{
+  "name": "my-sink-connect",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+    "connection.url": "jdbc:mysql://localhost:3307/zipkin",
+    "connection.user": "zipkin",
+    "connection.password": "zipkin",
+    "auto.create": "true",
+    "auto.evolve": "true",
+    "delete.enabled": "false",
+    "tasks.max": "1",
+    "topics": "my_topic_users"
+  }
+}
+2. Sink connect 목록 확인 (GET http://localhost:8083/connectors)
+3. Sink Connector Status 확인 (GET http://localhost:8083/connectors/my-sink-connect/status)
+4. DB1(db: mydb, table : users)에서 insert query 실행
+[ insert into users(user_id, name) values('test1', 'TEST_USER1'); ]
+5. DB2(db: zipkin, table: my_topic_users)에서 select query 실행
+[ select * from my_topic_users; ]
+6. Topic(my_topic_users)에 insert 데이터가 저장되는지 확인
+7. kafka-console-producer 명령어로 Topic에 직접 메시지 발생했을 때, DB2에 데이터가 생기는지 확인
+(bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic my_topic_users)
+
+// 만약 kafka connect 오류 발생 -> 버전 문제 (kafka-connect-jdbc-10.7 버전으로 변경)
+
+// 리셋
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic my_topic_users
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic example-catalog-topic
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic orders
+
