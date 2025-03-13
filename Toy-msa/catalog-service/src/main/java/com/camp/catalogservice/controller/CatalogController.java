@@ -3,6 +3,7 @@ package com.camp.catalogservice.controller;
 import com.camp.catalogservice.jpa.CatalogEntity;
 import com.camp.catalogservice.service.CatalogService;
 import com.camp.catalogservice.vo.ResponseCatalog;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/catalog-service")
 public class CatalogController {
@@ -47,6 +49,7 @@ public class CatalogController {
 
     @GetMapping("/catalogs")
     public ResponseEntity<List<ResponseCatalog>> getCatalogs() {
+        log.info("Called catalog list");
         Iterable<CatalogEntity> catalogList = catalogService.getAllCatalogs();
 
         List<ResponseCatalog> result = new ArrayList<>();
@@ -54,6 +57,7 @@ public class CatalogController {
             result.add(new ModelMapper().map(v, ResponseCatalog.class));
         });
 
+        log.info("Total catalog count -> {}", result.size());
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

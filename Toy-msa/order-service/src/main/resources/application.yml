@@ -42,7 +42,7 @@ eureka:
 
 logging:
   level:
-    com.example.orderservice: DEBUG
+    com.camp.orderservice: DEBUG
   pattern:
     correlation: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
 
