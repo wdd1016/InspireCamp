@@ -64,9 +64,7 @@ public class OrderController {
         }
         orderDto.setUserId(userId);
         /* jpa */
-        // OrderDto createdOrder = orderService.createOrder(orderDto);
-        // ResponseOrder responseOrder = mapper.map(createdOrder, ResponseOrder.class);
-        ResponseOrder responseOrder = mapper.map(orderDto, ResponseOrder.class);
+        OrderDto createdOrder = orderService.createOrder(orderDto);
 
         /* kafka */
         orderDto.setOrderId(UUID.randomUUID().toString());
