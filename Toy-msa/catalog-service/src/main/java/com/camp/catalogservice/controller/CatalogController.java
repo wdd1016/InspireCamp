@@ -12,6 +12,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -59,6 +60,16 @@ public class CatalogController {
 
         log.info("Total catalog count -> {}", result.size());
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @GetMapping("/catalog/count/{productId}")
+    public ResponseEntity<Integer> getCatalog(@PathVariable String productId) {
+        log.info("Called catalog product name {}", productId);
+
+        CatalogEntity catalogEntity = catalogService.getCatalogByProductId(productId);
+
+        log.info("Ended catalog product name -> {}", productId);
+        return ResponseEntity.status(HttpStatus.OK).body(catalogEntity.getStock());
     }
 
     private List<ServiceInstance> getApplications() {

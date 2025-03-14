@@ -16,10 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/order-service")
@@ -48,13 +45,17 @@ public class OrderController {
     }
 
     @PostMapping("/{userId}/orders")
-    public ResponseEntity<ResponseOrder> createOrder(@PathVariable("userId") String userId,
-                                                     @RequestBody RequestOrder orderDetails) {
+    public ResponseEntity<Map<String, String>> createOrder(@PathVariable("userId") String userId,
+                                                           @RequestBody RequestOrder orderDetails) {
         log.debug("Before add orders data");
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         OrderDto orderDto = mapper.map(orderDetails, OrderDto.class);
+        if (!orderService.isOrderAvailable(orderDto)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Collections.singletonMap("msg", "Unable to place order due to insufficient quantity."));
+        }
         orderDto.setUserId(userId);
         /* jpa */
         // OrderDto createdOrder = orderService.createOrder(orderDto);
@@ -70,7 +71,8 @@ public class OrderController {
         orderProducer.send("example-order-topic", orderDto);
 
         log.debug("After added orders data");
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(Collections.singletonMap("msg", "Order placed successfully."));
     }
 
     @GetMapping("/{userId}/orders")

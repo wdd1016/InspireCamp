@@ -6,17 +6,22 @@ import com.camp.orderservice.jpa.OrderRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
-    OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+    private final RestTemplate restTemplate;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, RestTemplate restTemplate) {
         this.orderRepository = orderRepository;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -46,5 +51,20 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Iterable<OrderEntity> getOrdersByUserId(String userId) {
         return orderRepository.findByUserId(userId);
+    }
+
+    @Override
+    public boolean isOrderAvailable(OrderDto orderDto) {
+        String productId = orderDto.getProductId();
+        String url = String.format("http://CATALOG-SERVICE/catalog-service/catalog/count/%s", productId);
+
+        ResponseEntity<Integer> response = restTemplate.getForEntity(url, Integer.class);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            Integer availableStock = response.getBody();
+            if (availableStock != null) {
+                return availableStock >= orderDto.getQty();
+            }
+        }
+        return false;
     }
 }
