@@ -11,4 +11,6 @@ public interface OrderService {
     Iterable<OrderEntity> getOrdersByUserId(String userId);
 
     boolean isOrderAvailable(OrderDto orderDto);
+
+    String getOrderServiceInstanceId();
 }

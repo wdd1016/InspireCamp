@@ -72,7 +72,10 @@ public class OrderController {
 
         /* send this order to the kafka */
         kafkaProducer.send("example-catalog-topic", orderDto);
-        orderProducer.send("example-order-topic", orderDto);
+
+        // instance information
+        String orderServiceInstanceId = orderService.getOrderServiceInstanceId();
+        orderProducer.send("example-order-topic", orderDto, orderServiceInstanceId);
 
         log.debug("After added orders data");
         return ResponseEntity.status(HttpStatus.CREATED)

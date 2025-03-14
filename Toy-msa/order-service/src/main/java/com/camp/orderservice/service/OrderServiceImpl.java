@@ -4,6 +4,8 @@ import com.camp.orderservice.client.CatalogServiceClient;
 import com.camp.orderservice.dto.OrderDto;
 import com.camp.orderservice.jpa.OrderEntity;
 import com.camp.orderservice.jpa.OrderRepository;
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +18,13 @@ import java.util.UUID;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final CatalogServiceClient catalogServiceClient;
+    private final EurekaClient eurekaClient;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, CatalogServiceClient catalogServiceClient) {
+    public OrderServiceImpl(OrderRepository orderRepository, CatalogServiceClient catalogServiceClient, EurekaClient eurekaClient) {
         this.orderRepository = orderRepository;
         this.catalogServiceClient = catalogServiceClient;
+        this.eurekaClient = eurekaClient;
     }
 
     @Override
@@ -63,4 +67,15 @@ public class OrderServiceImpl implements OrderService {
         }
         return false;
     }
+
+    @Override
+    public String getOrderServiceInstanceId() {
+        InstanceInfo instanceInfo = eurekaClient.getApplicationInfoManager().getInfo();
+        if (instanceInfo != null) {
+            return instanceInfo.getInstanceId();
+        }
+        return "";
+    }
+
+
 }

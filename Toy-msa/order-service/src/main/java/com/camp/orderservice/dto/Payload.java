@@ -12,4 +12,5 @@ public class Payload {
     private int qty;
     private int unit_price;
     private int total_price;
+    private String order_service_instance_id;
 }
