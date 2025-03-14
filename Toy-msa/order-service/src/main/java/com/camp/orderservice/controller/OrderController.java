@@ -15,6 +15,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -52,9 +53,14 @@ public class OrderController {
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         OrderDto orderDto = mapper.map(orderDetails, OrderDto.class);
-        if (!orderService.isOrderAvailable(orderDto)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Collections.singletonMap("msg", "Unable to place order due to insufficient quantity."));
+        try {
+            if (!orderService.isOrderAvailable(orderDto)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Collections.singletonMap("msg", "Unable to place order due to insufficient quantity."));
+            }
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body(Collections.singletonMap("msg", "Unavailable catalog service."));
         }
         orderDto.setUserId(userId);
         /* jpa */
