@@ -36,7 +36,18 @@ public class OrderServiceImpl implements OrderService {
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         OrderEntity orderEntity = mapper.map(orderDto, OrderEntity.class);
 
-        orderRepository.save(orderEntity);
+        OrderEntity order = orderRepository.findByUserIdAndProductId(orderDto.getUserId(),
+                orderDto.getProductId());
+        if (order != null) {
+            order.setQty(order.getQty() + orderEntity.getQty());
+            order.setTotalPrice(order.getTotalPrice() + orderEntity.getUnitPrice());
+            order.setUnitPrice(order.getTotalPrice() / order.getQty());
+            order.setOrderId(orderEntity.getOrderId());
+            order.setCreatedAt(orderEntity.getCreatedAt());
+            orderRepository.save(order);
+        } else {
+            orderRepository.save(orderEntity);
+        }
 
         OrderDto returnValue = mapper.map(orderEntity, OrderDto.class);
 
