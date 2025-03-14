@@ -1,0 +1,19 @@
+
+// orders 테이블 있는지 확인 (없으면 만들기)
+create table orders (id int auto_increment primary key,
+                     user_id varchar(50) not null,
+                     product_id varchar(20) not null,
+                     order_id varchar(50) not null,
+                     qty int default 0,
+                     unit_price int default 0,
+                     total_price int default 0,
+                     created_at datetime default now()
+);
+
+order-service build
+./gradlew build -x test
+
+java -jar build/libs/order-service-1.0.jar
+
+// 주문 확인
+bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic example-order-topic --from-beginning

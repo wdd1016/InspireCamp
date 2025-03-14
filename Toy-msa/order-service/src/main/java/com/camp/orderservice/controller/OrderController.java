@@ -50,15 +50,16 @@ public class OrderController {
     @PostMapping("/{userId}/orders")
     public ResponseEntity<ResponseOrder> createOrder(@PathVariable("userId") String userId,
                                                      @RequestBody RequestOrder orderDetails) {
-        log.info("Before add orders data");
+        log.debug("Before add orders data");
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         OrderDto orderDto = mapper.map(orderDetails, OrderDto.class);
         orderDto.setUserId(userId);
         /* jpa */
-        OrderDto createdOrder = orderService.createOrder(orderDto);
-        ResponseOrder responseOrder = mapper.map(createdOrder, ResponseOrder.class);
+        // OrderDto createdOrder = orderService.createOrder(orderDto);
+        // ResponseOrder responseOrder = mapper.map(createdOrder, ResponseOrder.class);
+        ResponseOrder responseOrder = mapper.map(orderDto, ResponseOrder.class);
 
         /* kafka */
         orderDto.setOrderId(UUID.randomUUID().toString());
@@ -66,9 +67,9 @@ public class OrderController {
 
         /* send this order to the kafka */
         kafkaProducer.send("example-catalog-topic", orderDto);
-        // orderProducer.send("orders", orderDto);
+        orderProducer.send("example-order-topic", orderDto);
 
-        log.info("After added orders data");
+        log.debug("After added orders data");
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }
 
