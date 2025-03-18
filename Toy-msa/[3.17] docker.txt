@@ -1,0 +1,107 @@
+docker ps -a
+
+docker network ls
+docker network rm ecommerce-network
+
+docker network inspect ecommerce-network
+(order-service 폴더에서 docker compose down)
+docker network rm ecommerce-network
+(+ kafka 제외 기타 등등 삭제)
+
+docker network create --driver bridge ecommerce-network
+(docker network create --gateway 127.18.0.1 --subnet 172.18.0.0/16 ecommerce-network 이런식으로 넣을 수도 있음)
+
+// RabbitMQ
+docker run -d --name rabbitmq --network ecommerce-network -p 15672:15672 -p 5672:5672 -e RABBITMQ_DEFAULT_USER=guest -e RABBITMQ_DEFAULT_PASS=guest rabbitmq:4.0-management
+http://localhost:15672/
+
+docker container inspect broker (기존 kafka -> 없으면 run)
+docker network connect ecommerce-network broker
+
+docker network inspect ecommerce-network
+docker container inspect broker
+
+// (zipkin 폴더에서) docker compose up -d (zipkin_default)
+
+docker network create my-network
+
+docker run -d --name mysql-server --network my-network -p 13306:3306 -e MYSQL_ROOT_PASSWORD=test1357 mysql:8.0.41
+
+docker run -d --name mariadb-server --network my-network -p 23306:3306 -e MARIADB_ROOT_PASSWORD=test1357 mariadb:latest
+
+1) Direct connect
+docker exec -it mysql-server bash
+mysql -hlocalhost -uroot -p (password: test1357)
+exit
+mysql -hmariadb-server -uroot -p (IP/ContainerID/ContainerName 사용 가능)
+create database mydb_from_mysql;
+
+docker exec -it mariadb-server bash
+mariadb -hlocalhost -uroot -p (password: test1357)
+show databases;
+show databases;
+
+docker network disconnect my-network mysql-server
+docker inspect mysql-server
+docker stop mysql-server
+docker stop mariadb-server
+docker ps -a
+docker network inspect my-network
+
+docker system prune
+docker ps -a
+docker network ls
+
+(프로젝트 최상위 폴더에 들어가서)
+./gradlew :config-service:build -x test
+
+// bootstrap.yml 에 대해서 JAR파일 안의 directory인지, file://(시스템 루트디렉트리) 인지, classpath: (Jar 내의 resource 폴더) 인지 확인.
+docker build --tag config-service:1.0 -f config-service/Dockerfile config-service
+docker images
+
+// Ready 단계 (Container ID, Port, Name이 지정됨)에서 오류로 멈춤
+// b576e533b2d80365533a9f412585c3d71a7c008755477f04d3dcb1047b36ecf2 docker: Error response from daemon: network my-network not found.
+docker run -d -p 8888:8888 --network my-network --name config-service config-service:1.0
+
+docker rm config-service
+docker run -d -p 8888:8888 --network ecommerce-network --name config-service config-service:1.0
+
+docker exec -it config-service bash
+
+docker container stop config-service
+docker container rm config-service
+docker run -d -p 8888:8888 -e encrypt.key-store.location=file:/apiEncryptionKey.jks --network ecommerce-network --name config-service config-service:1.0
+
+(프로젝트 최상위 폴더에 들어가서)
+./gradlew :service-discovery:build -x test
+
+docker build --tag service-discovery:1.0 -f service-discovery/Dockerfile service-discovery
+docker images
+
+docker login
+docker tag service-discovery:1.0 dockerhub_id/service-discovery:1.0
+docker push dockerhub_id/service-discovery:1.0
+
+docker run -d -p 8761:8761 --name service-discovery service-discovery:1.0
+docker network connect ecommerce-network service-discovery
+docker network inspect ecommerce-network
+
+(프로젝트 최상위 폴더에 들어가서)
+./gradlew :apigateway-service:build -x test
+
+docker build --tag apigateway-service:1.0 -f apigateway-service/Dockerfile apigateway-service
+docker tag apigateway-service:1.0 dockerhub_id/apigateway-service:1.0
+docker push dockerhub_id/apigateway-service:1.0
+
+docker run -d -p 8000:8000 --network ecommerce-network \
+-e "spring.cloud.config.uri=http://config-service:8888" \
+-e "spring.rabbitmq.host=rabbitmq" \
+-e "eureka.client.serviceUrl.defaultZone=http://service-discovery:8761/eureka" \
+--name apigateway-service apigateway-service:1.0
+
+// 확인
+http://localhost:8761/
+http://localhost:8888/user-service/defalut
+
+2) Host 에서 접속
+

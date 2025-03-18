@@ -1,5 +1,5 @@
-FROM openjdk:17-ea-11-jdk-slim
+FROM amazoncorretto:17
 VOLUME /tmp
-COPY src/main/resources/apiEncryptionKey.jks apiEncryptionKey.jks
-COPY build/libs/config-service-1.0.jar ConfigServer.jar
-ENTRYPOINT ["java","-jar","ConfigServer.jar"]
+COPY apiEncryptionKey.jks apiEncryptionKey.jks
+COPY build/libs/config-service-1.0.jar ConfServer.jar
+ENTRYPOINT ["java","-jar","ConfServer.jar"]

@@ -12,12 +12,6 @@ allprojects {
         mavenCentral()
         maven { url 'https://repo.spring.io/milestone' }
     }
-
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(17)
-        }
-    }
 }
 
 subprojects {
