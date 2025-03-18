@@ -15,7 +15,8 @@ docker network create --driver bridge ecommerce-network
 docker run -d --name rabbitmq --network ecommerce-network -p 15672:15672 -p 5672:5672 -e RABBITMQ_DEFAULT_USER=guest -e RABBITMQ_DEFAULT_PASS=guest rabbitmq:4.0-management
 http://localhost:15672/
 
-docker container inspect broker (기존 kafka -> 없으면 run)
+(기존 kafka -> 없으면 docker run -d -p 9092:9092 --network ecommerce-network --name broker apache/kafka:latest)
+docker container inspect broker
 docker network connect ecommerce-network broker
 
 docker network inspect ecommerce-network
