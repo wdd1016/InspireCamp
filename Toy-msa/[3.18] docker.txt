@@ -28,3 +28,10 @@ docker-compose -f docker-compose-kafka.yml up -d
 docker-compose -f docker-compose-kafka.yml exec -it broker bash
 cd /opt/kafka/bin
 ./kafka-topics.sh --bootstrap-server broker:9092 --list
+
+(프로젝트 상위 폴더에서)
+./gradlew :catalog-service:build -x test
+docker build --tag catalog-service:1.0 -f catalog-service/Dockerfile catalog-service
+
+(catalog-service 폴더에서)
+docker compose -f docker-compose-catalog.yml up -d
