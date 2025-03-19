@@ -18,9 +18,7 @@ import org.springframework.security.web.access.intercept.RequestAuthorizationCon
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.IpAddressMatcher;
 
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.util.function.Supplier;
 
 
@@ -40,18 +38,38 @@ public class WebSecurityNew {
         this.env = env;
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.myIPAddrSpEL = String.format("hasIpAddress('127.0.0.1') or hasIpAddress('%s')", getIPAddress());
+        this.myIPAddrSpEL = String.format("hasIpAddress('127.0.0.1') or hasIpAddress('%s')", getNetworkIPAddress());
     }
 
-    private String getIPAddress() {
-        try (final DatagramSocket socket = new DatagramSocket()) {
-            // 외부 IP (구글 DNS 서버)를 대상으로 연결합니다.
-            socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
-            return socket.getLocalAddress().getHostAddress();
+    private String getNetworkIPAddress() {
+        try {
+            InetAddress localAddr = InetAddress.getLocalHost();
+            NetworkInterface network = NetworkInterface.getByInetAddress(localAddr);
+            if (network != null) {
+                for (InterfaceAddress addr : network.getInterfaceAddresses()) {
+                    InetAddress inet = addr.getAddress();
+                    if (inet.equals(localAddr) && addr.getNetworkPrefixLength() <= 32) {
+                        System.out.println("MY_NETWORK_ADDRESS: " + getNetworkAddr(addr, inet));
+                        return getNetworkAddr(addr, inet);
+                    }
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return "";
         }
+        return "";
+    }
+
+    private static String getNetworkAddr(InterfaceAddress addr, InetAddress inet) {
+        int prefix = addr.getNetworkPrefixLength();
+        byte[] ipBytes = inet.getAddress();
+        int mask = ~((1 << (32 - prefix)) - 1);
+        int ipInt = ((ipBytes[0] & 0xFF) << 24) | ((ipBytes[1] & 0xFF) << 16) |
+                ((ipBytes[2] & 0xFF) << 8) | (ipBytes[3] & 0xFF);
+        int networkInt = ipInt & mask;
+        return String.format("%d.%d.%d.%d/%d",
+                (networkInt >> 24) & 0xFF, (networkInt >> 16) & 0xFF,
+                (networkInt >> 8) & 0xFF, networkInt & 0xFF, prefix);
     }
 
     @Bean
@@ -78,6 +96,7 @@ public class WebSecurityNew {
 //                        .requestMatchers("/**").access(this::hasIpAddress)
                                 .requestMatchers("/**").access(
                                         // '172.30.1.48' -> Remote Address Required, Please enter your IP (127.0.0.1 : 403 Forbidden)
+                                        //
                                         new WebExpressionAuthorizationManager(myIPAddrSpEL)) // host pc ip address
                                 .anyRequest().authenticated()
                 )

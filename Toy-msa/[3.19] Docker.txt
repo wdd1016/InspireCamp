@@ -1,0 +1,15 @@
+(프로젝트 상위 폴더에서)
+./gradlew :user-service:build -x test
+docker build --tag user-service:1.0 -f user-service/Dockerfile user-service
+
+(user-service 폴더에서)
+docker compose -f docker-compose-user.yml up -d
+
+
+// toy-msa에 있는 서비스를 docker-compose로 관리
+// 모든 docker 이미지는 hub.docker.com에 업로드(push)하여 사용할 것
+
+0. sh init.sh
+
+1. docker-compose-inner.yml
+docker compose -f docker-compose-inner.yml up -d

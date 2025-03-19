@@ -1,10 +1,11 @@
 services:
-  catalog-service:
-    image: catalog-service:1.0
+  user-service:
+    image: user-service:1.0
 
     environment:
+      spring.config.import: optional:configserver:http://config-service:8888/
+      spring.rabbitmq.host: rabbitmq
       spring.zipkin.base-url: http://zipkin-zipkin-1:9411
-      spring.datasource.url: jdbc:mariadb://mariadb-server:3306/mydb
       eureka.client.service-url.defaultZone: http://service-discovery:8761/eureka/
       management.zipkin.tracing.endpoint: http://zipkin-zipkin-1:9411/api/v2/spans
 
