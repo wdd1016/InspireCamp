@@ -13,3 +13,6 @@ docker compose -f docker-compose-user.yml up -d
 
 1. docker-compose-inner.yml
 docker compose -f docker-compose-inner.yml up -d
+
+2. docker-compose-outer.yml
+docker compose -f docker-compose-outer.yml up -d

@@ -3,10 +3,10 @@ services:
     image: catalog-service:1.0
 
     environment:
-      spring.zipkin.base-url: http://zipkin-zipkin-1:9411
-      spring.datasource.url: jdbc:mariadb://mariadb-server:3306/mydb
-      eureka.client.service-url.defaultZone: http://service-discovery:8761/eureka/
-      management.zipkin.tracing.endpoint: http://zipkin-zipkin-1:9411/api/v2/spans
+      SPRING_ZIPKIN_BASE_URL: http://zipkin-zipkin-1:9411
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb-server:3306/mydb
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin-zipkin-1:9411/api/v2/spans
 
     networks:
       my-network:

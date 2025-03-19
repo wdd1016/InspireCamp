@@ -38,7 +38,7 @@ public class WebSecurityNew {
         this.env = env;
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.myIPAddrSpEL = String.format("hasIpAddress('127.0.0.1') or hasIpAddress('%s')", getNetworkIPAddress());
+        this.myIPAddrSpEL = String.format("hasIpAddress('apigateway-service') or hasIpAddress('%s')", getNetworkIPAddress());
     }
 
     private String getNetworkIPAddress() {

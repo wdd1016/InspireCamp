@@ -3,11 +3,12 @@ services:
     image: user-service:1.0
 
     environment:
-      spring.config.import: optional:configserver:http://config-service:8888/
-      spring.rabbitmq.host: rabbitmq
-      spring.zipkin.base-url: http://zipkin-zipkin-1:9411
-      eureka.client.service-url.defaultZone: http://service-discovery:8761/eureka/
-      management.zipkin.tracing.endpoint: http://zipkin-zipkin-1:9411/api/v2/spans
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-service:8888/
+      SPRING_CLOUD_CONFIG_URI: http://config-service:8888
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_ZIPKIN_BASE_URL: http://zipkin-zipkin-1:9411
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin-zipkin-1:9411/api/v2/spans
 
     networks:
       my-network:

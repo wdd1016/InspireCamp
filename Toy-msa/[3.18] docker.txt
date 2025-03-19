@@ -4,7 +4,7 @@
 docker compose down
 2. docker network connect : container 추가
 
-docker run -d -p 3306:3306 --name mariadb-server --network ecommerce-network -e MARIADB_ROOT_PASSWORD=test1357 mariadb:latest
+docker run -d -p 3306:3306 --name mariadb-server --network ecommerce-network -e MARIADB_ROOT_PASSWORD=test1357 -e MARIADB_DATABASE=mydb mariadb:latest
 
 order-service docker-compose-order.yml, Dockerfile
 
@@ -15,8 +15,8 @@ docker build --tag order-service:1.0 -f order-service/Dockerfile order-service
 (order-service 폴더에서)
 docker compose -f docker-compose-order.yml up -d
 
-// mariadb-server에 연결하여 mydb 데이터베이스 생성
-create database mydb;
+// mariadb-server에 연결하여 mydb 데이터베이스 없다면 생성
+// create database mydb;
 
 docker compose -f docker-compose-order.yml logs
 
