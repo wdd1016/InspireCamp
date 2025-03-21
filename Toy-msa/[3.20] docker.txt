@@ -1,0 +1,13 @@
+// 오류, 해결 (config-service encrypt, decrypt & kafka)
+1. POST localhost:8888/ v 오류
+config-server
+bootstrap.yml 파일에
+encrypt:
+  key-store:
+    location: classpath:/apiEncryptionKey.jks
+location 변경 (Dockerfile을 보면 root 폴더이므로, file:/apiEncryptionKey.jks 로 변경)
+-> docker-compose.outer.yml environment 수정
+
+2. Kafka 호스트머신 접근 문제
+-> KAFKA_LISTENERS, KAFKA_ADVERTISED_LISTENERS에 EXTERNAL이라는 새로운 리스너 추가 (KAFKA_LISTENER_SECURITY_PROTOCOL_MAP도)
+-> 도커의 auto port forwarding 때문에, KAFKA_LISTENERS(브로커가 받는 주소)는 broker:9094 이런식으로 되야 함.

@@ -17,8 +17,11 @@ https://dlcdn.apache.org/kafka/3.9.0/kafka_2.13-3.9.0.tgz
 // 카프카 토픽 생성
 bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092 --partitions 1
 -> Created topic quickstart-events.
+
+// 카프카 토픽 리스트 홧인
 bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
 -> quickstart-events
+
 bash ~/Desktop/kafka_2.12-3.9.0/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic quickstart-events
 
 // Consumer 2개 (이전 발행한것도 받음 : --from-beginning)
