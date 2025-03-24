@@ -1,0 +1,139 @@
+// 볼륨 마운트 사용하여 tomcat 설정
+docker stop tomcat
+(docker rm tomcat)
+
+mkdir -p /tmp/jks/shard
+docker run -d -it -p 8888:8080 -v /tmp/jks/shard:/work/shard --name tomcat tomcat:9.0.102-jdk21-corretto
+docker exec -it tomcat bash
+cp /usr/local/tomcat/conf/tomcat-users.xml /work/shard/tomcat-users.xml
+<수정>
+cp /work/shard/tomcat-users.xml /usr/local/tomcat/conf/tomcat-users.xml
+cp /usr/local/tomcat/webapps/manager/META-INF/context.xml /work/shard/context.xml
+<수정>
+cp /work/shard/context.xml /usr/local/tomcat/webapps/manager/META-INF/context.xml
+cp /usr/local/tomcat/webapps/host-manager/META-INF/context.xml /work/shard/context2.xml
+<수정>
+cp /work/shard/context2.xml /usr/local/tomcat/webapps/host-manager/META-INF/context.xml
+exit
+docker restart tomcat
+
+localhost:8088
+Jenkins server
+<My-Second-Project>
+    <작업공간>
+    <구성>
+    <지금 빌드>
+
+git clone https://github.com/joneconsulting/cicd-web-project.git
+cd cicd-web-project
+mvn clean compile package -DskipTest=true
+
+localhost:8888 -> manager app (admin, admin) -> 배치할 war 파일 (hello-world.war) -> 배치
+http://localhost:8888/hello-world/
+
+cicd-web-project/src/main/webapp/WEB-INF/views/index.jsp 수정 (9.0.120, Version: 5.0.0)
+mvn clean compile package -DskipTest=true
+localhost:8888 -> manager app (admin, admin)
+-> /hello-world 중지 & 배치된 것을 제거
+-> 배치할 war 파일 (hello-world.war) -> 배치
+http://localhost:8888/hello-world/
+
+/usr/local/tomcat/webapps/ 폴더 내의 war 파일은 자동으로 압축해제 됨.
+(webapps 폴더 내에 war파일을 넣으면 배포 완료)
+
+<New item>
+    My-Third-Project
+    Maven project
+
+설명: Deploy the Third project on Tomcat
+소스 코드 관리: Git: https://github.com/joneconsulting/cicd-web-project.git
+Branch Specifier: */main
+Build: Goals and options:
+빌드 후 조치: Deploy war/ear to a container
+    WAR/EAR files:
+    Containers: Tomcat 9.x Remote:
+        Credentials:
+            Username: deployer, Password: deployer, ID: deployer_user, Description: user to deploy on tomcat VM
+        Tomcat URL: http://172.17.0.3:8080/ (docker inspect tomcat | grep IPAddress 으로 찾아내기)
+
+1. https://github.com/joneconsulting/cicd-web-project.git 코드를 자신의 github계정에 업로드
+   - fork (https://github.com/wdd1016/cicd-web-project.git)
+2. My-Third-Project
+   - 자신의 Git 계정에서 코드를 사용하도록 수정
+3. 자신의 Gir 계정에 있는 cicd-web-project 프로젝트의 소스코드를 수정
+   - Local 작업
+   - Git commit / push
+4. My-Third-Project에서
+   - 빌드 테스트
+
+// SSH
+
+// Windows) SSH 서버 (with 도커 + no iptables) 실행 명령어 (방법3, 위 명령어로 실행되지 않을 경우, iptables 사용하지 않고 실행)
+docker run -itd --name docker-server -p 10022:22 -e container=docker --tmpfs /run --tmpfs /tmp -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+-v /var/run/docker.sock:/var/run/docker.sock edowon0623/docker:no_iptables /usr/sbin/init
+// Windows4) SSH 서버 (with 도커 + no iptables) 실행 명령어 (방법4, 위 명령어로 실행되지 않을 경우, iptables 사용하지 않고 실행, Windows 11의 경우)
+docker run --privileged -itd --name docker-server -p 10022:22 -e container=docker --tmpfs /run --tmpfs /tmp -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
+--cgroupns=host edowon0623/docker:no_iptables /usr/sbin/init
+
+// MacOS) apple silicon chip, m1: CentOS에 SSH 서버 (with 도커 + apple chip) 실행 명령어
+docker run --privileged --name docker-server -itd -p 10022:22 -p 8081:8080 -e container=docker \
+-v /sys/fs/cgroup:/sys/fs/cgroup:rw --cgroupns=host edowon0623/docker-server:m1 /usr/sbin/init
+// MacOS2) apple silicon chip, m1: Ubuntu에 SSH 서버 (with 도커 + apple chip) 실행 명령어
+docker run --privileged --name docker-server -itd -p 10022:22 -p 8081:8080 -e container=docker \
+-v /sys/fs/cgroup:/sys/fs/cgroup:rw --cgroupns=host edowon0623/docker-server:m1-ubuntu /usr/sbin/init
+
+docker ps -a
+ssh root@localhost -p 10022
+(문제 발생시 ~/.ssh/known_hosts 해당부분 삭제)
+password: P@ssw0rd
+
+systemctl enable docker
+systemctl start docker
+systemctl status docker
+
+(추가 터미널)
+docker run --privileged --name tomcat-server -itd -p 20022:22 -p 8082:8080 -e container=docker \
+-v /sys/fs/cgroup:/sys/fs/cgroup:rw --cgroupns=host edowon0623/docker-server:m1 /usr/sbin/init
+ssh root@localhost -p 20022
+password: P@ssw0rd
+
+docker stop tomcat-server
+docker rm tomcat-server
+
+localhost:8088 <젠킨스>
+Publish Over SSH 플러그인 설치 확인
+
+Dashboard -> Jenkins 관리 -> System:
+    SSH Servers: (추가)
+        Name: docker-server
+        Hostname: 172.17.0.4 (docker inspect docker-server | grep IPAddress)
+        Username: root
+        Remote Directory: .
+        고급 -> Use Password ~ 체크 -> Password: P@ssw0rd
+        Timeout (ms): 600000
+    Test Configuration 클릭 - Success 확인!
+
+<New item>
+Name: My-Docker-Project
+Maven Project
+Copy from: My-Third-Project
+-> 다음
+<빌드 후 조치>
+    Send build artifacts over SSH: -> Jenkins SSH Client 에서 도커 이미지 빌드 & Push 서버로 보내기 (CI)
+        Transfer Set:
+            Source files: target/*.war
+            Remove prefix: target
+            Remote directory: .
+Apply & Save & 지금 빌드
+
+<ssh root@localhost -p 10022 연결 상태>
+vi Dockerfile
+
+<Jenkins -> My-Docker-Project -> 구성 -> Send build artifacts over SSH -> Exec command>
+docker build --tag hello-world:1.0 -f Dockerfile . ;
+
+<ssh root@localhost -p 10022 연결 상태>
+docker images
+
+* dangling images
+<none> <none> 이면, dangling images (사용 불가)
