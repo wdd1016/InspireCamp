@@ -1,0 +1,38 @@
+<AWS 인스턴스 생성>
+
+Amazon Linux 2023
+t2.micro
+키페어 생성 -> 잘 저장
+보안그룹생성 (SSH -> 0.0.0.0/0)
+생성
+
+EC2 -> 인스턴스
+인스턴스 ID 클릭
+연결 누루면 SSH 클라이언트 접속방법 나옴
+
+연결
+
+확인 후 인스턴스 삭제
+
+<toy-msa-ec2 AMI>
+Amazon Machine Images(AMI) 프라이빗 이미지
+toy-msa-from-seoul
+-> AMI로 인스턴스 시작 (t2-micro, 30GiB 용량)
+
+1) 연결 확인 (로그인 테스트)
+2) SSH 클라이언트(Terminus)에 등록
+3) 인스턴스 중지
+4) 해당 인스턴스로 이미지 생성
+
+<toy-msa-ec2 -> service-discovery(eureka)>
+cd service-discovery
+mvn clean compile package -DskipTests=true
+docker build --tag service-discovery:1.0 -f Dockerfile .
+docker images
+docker run -d -p 8761:8761 --name service-discovery service-discovery:1.0
+docker ps
+
+보안그룹 -> 해당 인스턴스 보안 -> 인바운드 규칙 편집
+규칙추가
+    포트범위 8761 (TCP)
+    IPv4 Anywhere

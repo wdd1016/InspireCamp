@@ -1,0 +1,54 @@
+- CI/CD 배포 파이프 (자동화 배포/무중단 배포)
+- Jenkins Pipeline 생성 (Groovy)
+
+Step 1) https://github.com/joneconsulting/cicd-web-project 에서 코드 가져와서 빌드
+
+Step 2) 빌드 된 결과물을 docker-server로 전송
+
+Step 3) docker-server에 전송 된 빌드 결과물(hello-world.war)을 이미지 생성
+
+
+<docker-server 컨테이너 exec 확인>
+(docker run --privileged -itd --name docker-server -p 10022:22 -e container=docker --tmpfs /run --tmpfs /tmp -v /sys/fs/cgroup:/sys/fs/cgroup:rw --cgroupns=host edowon0623/docker-server:m1 /usr/sbin/init)
+
+sh-4.4# hostname -i
+172.17.0.3
+sh-4.4# ls
+Dockerfile  anaconda-ks.cfg  anaconda-post.log  original-ks.cfg
+sh-4.4# cat Dockerfile
+FROM tomcat:latest
+
+systemctl status docker
+문제 있다면:
+systemctl enable docker
+systemctl start docker
+systemctl status docker
+
+LABEL org.opencontainers.image.authors="edowon0623@gmail.com"
+
+COPY ./webapp.war /usr/local/tomcat/webapps
+이렇게 나오면 ->
+docker exec docker-server sed -i 's|COPY ./webapp.war /usr/local/tomcat/webapps|COPY ./*.war /usr/local/tomcat/webapps|' Dockerfile
+
+<젠킨스 확인>
+
+http://localhost:8088/manage/configureTools/
+
+    Maven
+        Name
+            maven3.8.8
+    Version
+        3.8.8
+
+http://localhost:8088/manage/configure
+
+Publish over SSH
+    SSH Server
+        Hostname
+            172.17.0.3
+
+        Test Configuration
+            Success
+
+https://sailssoftware.com/top-5-deployment-strategies/
+
