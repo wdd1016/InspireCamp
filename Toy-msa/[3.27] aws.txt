@@ -1,0 +1,100 @@
+Amazon Elastic Container Registry
+
+Amazon ECR -> 프라이빗 레지스트리 -> 리포지토리
+    리포지토리 생성
+
+docker-server (EC2) 접속
+
+aws configure (만약 등록이 안되있다면)
+    AWS Access Key ID [None]: Access key ID
+    AWS Secret Access Key [None]: Secret access key
+    Default region name [None]: ap-northeast-2
+    Default output format [None]:
+
+Amazon ECR -> 프라이빗 레지스트리 -> 리포지토리 -> juyoung-toy-msa/hello-world
+    푸쉬 명령 보기 -> 차례대로 입력 (docker-server)
+    aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 969400486267.dkr.ecr.ap-northeast-2.amazonaws.com
+    (생략 : docker build -t juyoung-toy-msa/hello-world .)
+    docker tag hello-world:test1.0 969400486267.dkr.ecr.ap-northeast-2.amazonaws.com/juyoung-toy-msa/hello-world:latest
+    docker push 969400486267.dkr.ecr.ap-northeast-2.amazonaws.com/juyoung-toy-msa/hello-world:latest
+
+Docker pull
+    (aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 969400486267.dkr.ecr.ap-northeast-2.amazonaws.com)
+    docker pull 969400486267.dkr.ecr.ap-northeast-2.amazonaws.com/juyoung-toy-msa/hello-world:latest
+
+<Amazon ECS>
+docker run -d -p 8080:8080 --name hello-world 969400486267.dkr.ecr.ap-northeast-2.amazonaws.com/juyoung-toy-msa/hello-world:latest
+http://13.125.178.15:8080/hello-world
+(보안그룹에서 8080 port 열려있어야 함)
+
+Amazon Elastic Container Service -> 새 태스크 정의 생성
+    태스크 정의 구성
+        task-definition-hello-world-juyoung-1
+    인프라 요구 사항
+        Fargate
+    컨테이너 - 1
+        이름: hello-world-juyoung-container
+        uri: 969400486267.dkr.ecr.ap-northeast-2.amazonaws.com/juyoung-toy-msa/hello-world:latest
+        컨테이너 포트: 8080
+        포트 이름: tomcat-port
+
+Amazon Elastic Container Service -> 클러스터 -> 클러스터 생성
+    클러스터 이름: LGCNS-Juyoung-Cluster-1
+
+Amazon Elastic Container Service -> 클러스터 -> LGCNS-Juyoung-Cluster-1 -> 서비스 생성
+    배포 구성
+        애플리케이션 유형: 서비스
+        태스크 정의 패밀리: task-definition-hello-world-juyoung-1
+        서비스 이름: srv-helloworld-juyoung-new-1
+    네트워킹
+        VPC: 기본값
+        서브넷: 잘 선택되어있는지 (ap-northeast-2 a, b, c, d)
+        보안 그룹: launch-wizard-3 (여태까지 사용한것)
+        퍼블릭 IP: 켜짐
+
+Amazon Elastic Container Service -> 클러스터 -> LGCNS-Juyoung-Cluster-1 -> 서비스
+-> srv-helloworld-juyoung-new-1 -> 태스크 -> 4b74abf540534f49851cf18a6fc31289 -> 구성
+    퍼블릭 IP
+    : 15.165.12.93
+    http://15.165.12.93:8080/hello-world/
+
+
+Amazon Elastic Container Service -> 클러스터 -> LGCNS-Juyoung-Cluster-1 -> 서비스 생성
+    배포 구성
+        애플리케이션 유형: 서비스
+        태스크 정의 패밀리: task-definition-hello-world-juyoung-1
+        서비스 이름: srv-helloworld-juyoung-new-2
+    네트워킹
+        VPC: 기본값
+        서브넷: 잘 선택되어있는지 (ap-northeast-2 a, b, c, d)
+        보안 그룹: launch-wizard-3 (여태까지 사용한것)
+        퍼블릭 IP: 켜짐
+    로드밸런싱
+        VPC: 위의 네트워킹의 VPC 잘 입력
+        로드 밸런서 유형: Application Load Balancer (L7)
+        로드 밸런서 이름: alb-helloworld-juyoung-1
+        리스너 -> 새 리스너 생성 -> 포트: 8080, 프로토콜: HTTP
+        대상 그룹 -> 새 대상 그룹 생성
+        -> 모두 기본 & 상태 확인 경로: /hello-world/
+
+EC2 -> 로드 밸런서 -> alb-helloworld-juyoung-1 -> 보안
+    보안 그룹에 8080 포트 열려있는지 확인.
+
+
+EC2 -> 로드 밸런서 -> alb-helloworld-juyoung-1
+    DNS 이름
+        alb-helloworld-juyoung-1-786614517.ap-northeast-2.elb.amazonaws.com
+
+-> http://alb-helloworld-juyoung-1-786614517.ap-northeast-2.elb.amazonaws.com:8080/hello-world/
+   접속
+
+Amazon Elastic Container Service -> 클러스터 -> LGCNS-Juyoung-Cluster-1 -> 서비스 -> srv-helloworld-juyoung-new-2 -> 로그
+
+EC2 -> 대상 그룹 -> ecs-LGCNS--srv-helloworld-juyoun
+
+Amazon Elastic Container Service -> 클러스터 -> LGCNS-Juyoung-Cluster-1 -> 서비스
+-> srv-helloworld-juyoung-new-2 -> 업데이트
+    원하는 태스크: 3
+
+EC2 -> 대상 그룹 -> ecs-LGCNS--srv-helloworld-juyoun -> 대상 -> 등록된 대상(3)
+    IP 3개
